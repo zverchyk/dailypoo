@@ -1,0 +1,164 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.wrapper {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+.wrapper .header {
+  background-color: #d4d4d4;
+  color: #fff;
+  position: absolute;
+}
+.wrapper .header__poo-case {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.wrapper .header__poo-case span {
+  font-size: 2rem;
+}
+.wrapper .main {
+  background-color: #2ecc71;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.wrapper .main__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+}
+.wrapper .main__container__poo-button {
+  font-size: 2rem;
+  width: 33.33%;
+  height: 33.33%;
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 250px;
+}
+.wrapper .main__container__poo-button span {
+  transition: color 0.3s ease;
+}
+.wrapper .main__container__poo-button:hover span {
+  background: #25a25a;
+  text-shadow: #3498db;
+}
+.wrapper .main__container__clock {
+  margin-top: 50px;
+  font-size: 120px;
+  color: #d4d4d4;
+}
+.wrapper .footer {
+  background-color: #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.wrapper .footer .login {
+  display: flex;
+  justify-content: space-between;
+}
+.wrapper .footer .login__log, .wrapper .footer .login__sign {
+  background: #d4d4d4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.wrapper .footer .login__log:hover, .wrapper .footer .login__sign:hover {
+  background: #bbbbbb;
+}
+.wrapper .footer__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wrapper .footer__inputs__labels {
+  display: flex;
+  justify-content: space-between;
+}
+.wrapper .footer__inputs__labels label {
+  font-weight: bold;
+}
+.wrapper .footer__inputs__input {
+  display: flex;
+  justify-content: space-between;
+}
+.wrapper .footer__inputs__input input {
+  width: calc(50% - 10px);
+  padding: 5px;
+}
+.wrapper .footer__inputs button[type=submit] {
+  align-self: center;
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.wrapper .footer__inputs button[type=submit]:hover {
+  background: #25a25a;
+}
+.wrapper .footer__account {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wrapper .footer__account__graph, .wrapper .footer__account__delete {
+  background: #d4d4d4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.wrapper .footer__account__graph:hover, .wrapper .footer__account__delete:hover {
+  background: #bbbbbb;
+}
+.wrapper .footer__account .delete__pass {
+  display: flex;
+  gap: 10px;
+}
+.wrapper .footer__account .delete__pass input {
+  flex-grow: 1;
+  padding: 5px;
+}
+.wrapper .footer__account .delete__pass button {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.wrapper .footer__account .delete__pass button:hover {
+  background: #d62c1a;
+}/*# sourceMappingURL=style.css.map */

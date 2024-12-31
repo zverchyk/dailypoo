@@ -1,0 +1,188 @@
+$wrapper-padding: 20px;
+$container-max-width: 1200px;
+$font-family: Arial, sans-serif;
+$primary-color: #d4d4d4;
+$secondary-color: #2ecc71;
+$danger-color: #e74c3c;
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  font-family: $font-family;
+
+}
+
+
+.container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+}
+
+.wrapper {
+  font-family: $font-family;
+  display: flex;
+  flex-direction: column;
+
+
+  .header {
+    background-color: $primary-color;
+    color: #fff;
+    position: absolute;
+    &__poo-case {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+     
+      span {
+        font-size: 2rem;
+      }
+    }
+  }
+
+  .main {
+    background-color: #2ecc71;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    height: 100vh;
+
+    &__container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+
+
+      &__poo-button {
+        font-size: 2rem;
+        width: 33.33%;
+        height: 33.33%;
+        background: $secondary-color;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 250px;
+        span{
+          transition: color 0.3s ease;
+        }
+        &:hover {
+          span{
+            background: darken($secondary-color, 10%);
+            text-shadow: #3498db;
+          }
+          
+        }
+      }
+      &__clock {
+        margin-top: 50px;
+        font-size: 120px;
+        color: $primary-color;
+      }
+    }
+  }
+
+  .footer {
+    background-color: #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .login__log-btn {
+      display: flex;
+      justify-content: space-between;
+      &__log, &__sign {
+        background: $primary-color;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        &:hover {
+          background: darken($primary-color, 10%);
+        }
+      }
+    }
+
+    &__inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      &__labels {
+        display: flex;
+        justify-content: space-between;
+        label {
+          font-weight: bold;
+        }
+      }
+      &__input {
+        display: flex;
+        justify-content: space-between;
+        input {
+          width: calc(50% - 10px);
+          padding: 5px;
+        }
+      }
+      button[type="submit"] {
+        align-self: center;
+        background: $secondary-color;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        &:hover {
+          background: darken($secondary-color, 10%);
+        }
+      }
+    }
+
+    &__account {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      &__graph, &__delete {
+        background: $primary-color;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        &:hover {
+          background: darken($primary-color, 10%);
+        }
+      }
+      .delete__pass {
+        display: flex;
+        gap: 10px;
+        input {
+          flex-grow: 1;
+          padding: 5px;
+        }
+        button {
+          background: $danger-color;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          padding: 10px 20px;
+          cursor: pointer;
+          &:hover {
+            background: darken($danger-color, 10%);
+          }
+        }
+      }
+    }
+  }
+}
