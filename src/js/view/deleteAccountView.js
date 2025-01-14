@@ -25,9 +25,9 @@ class deleteAccountView extends View{
 
     _generateMarkUp(){
         return     `<div class="delete__pass">
-        <input type="text" id='confirmation-pass' placeholder="type your password for confirmation" value = '0'>
-        <button id='delete-submit'>Submit</button>
-        <button id="go-to-account">Cancel</button>
+        <input type="text" id='confirmation-pass' placeholder="type your password">
+        <button id='delete-submit' class="delete__submit">Submit</button>
+        <button id="go-to-account" class="delete__cancel">Cancel</button>
     </div>`
     }
 }

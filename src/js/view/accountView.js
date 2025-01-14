@@ -17,18 +17,31 @@ class accountView extends View{
           });
     }
     
-
+    renderloading(){
+        this.render(this._generateLoadingMarkUp)
+    }
 
     renderError(){
-        console.log('incorect pass or email')
+        this.render(this._generateErrorMarkUp)
+    }
+    _generateErrorMarkUp(){
+        return `            <div class="login-error">
+                <p>incorect pass or email</p>
+                <button id='log-out'>Retry</button>
+            </div>
+        `
+    }
+    _generateLoadingMarkUp(){
+        return `
+        <p>Loading...</p>`
     }
 
     _generateMarkUp(){
         return `
         <div class="footer__account">
-                <button class="footer__accout__graph receive-graph" >Receive graph</button>
-                <button class="footer__accout__delete delete-account" id="delete-account">Delete Account</button>
-                <button class="footer__accout__logout" id="log-out">Log out</button>
+                <button class="footer__account__graph receive-graph" >Receive graph</button>
+                <button class="footer__account__delete delete-account" id="delete-account">Delete Account</button>
+                <button class="footer__account__logout" id="log-out">Log out</button>
         `
     }
 

@@ -28,6 +28,7 @@ const controlLogin = function(){
     try{
         loginView.render()
         loginView.scrollToLoginElement()
+        // model.createUser({name: 'jack', password: 'jack'})
      
     }
     catch(err){
@@ -35,7 +36,7 @@ const controlLogin = function(){
     }
 }
 
-const controlAccount = function(){
+const controlAccount = async function(){
     try{
         if(!model.state.user && !model.state.password) {
             const [ user, pass]  = loginView.getUserPass()
@@ -43,7 +44,8 @@ const controlAccount = function(){
             model.state.password = pass
         }
 
-        model.checkLogin()? accountView.render() : accountView.renderError()
+
+        await model.checkLogin()? accountView.render() : accountView.renderError()
         accountView.scrollToLoginElement()
 
 
@@ -86,7 +88,7 @@ const init = function(){
     deleteAccountView.addDeleteAccountWindowHandler(controlDeleteAccountWindow)
     accountView.addLogoutHandler(controlLogOut)
     deleteAccountView.addDeleteAccountHandler(controlDeleteAccount)
-    
+
 
 }
 

@@ -1,10 +1,12 @@
 $wrapper-padding: 20px;
 $container-max-width: 1200px;
 $font-family: Arial, sans-serif;
-$primary-color: #d4d4d4;
+$primary-color: #f3eded;
 $secondary-color: #2ecc71;
 $danger-color: #e74c3c;
-
+$login-color: rgb(44, 44, 198);
+$graph-color:  #156030;
+$logout-color: #ccc;
 
 html, body {
   margin: 0;
@@ -100,23 +102,11 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    .login__log-btn {
-      display: flex;
-      justify-content: space-between;
-      &__log, &__sign {
-        background: $primary-color;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        cursor: pointer;
-        &:hover {
-          background: darken($primary-color, 10%);
-        }
-      }
-    }
+  }
 
-    &__inputs {
+  .footer__container{
+    margin: 20px;
+    .footer__inputs {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -132,8 +122,19 @@ html, body {
         justify-content: space-between;
         input {
           width: calc(50% - 10px);
-          padding: 5px;
+          padding: 10px;
+          margin: 10px 0;
+          border: 2px solid #ddd;
+          border-radius: 5px;
+          font-size: 16px;
+          outline: none;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
+
+        input:focus {
+          border-color: #4CAF50;
+          box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
       }
       button[type="submit"] {
         align-self: center;
@@ -142,6 +143,7 @@ html, body {
         border: none;
         border-radius: 5px;
         padding: 10px 20px;
+
         cursor: pointer;
         &:hover {
           background: darken($secondary-color, 10%);
@@ -149,21 +151,39 @@ html, body {
       }
     }
 
-    &__account {
+    .footer__account {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      &__graph, &__delete {
-        background: $primary-color;
+      button{
+
         color: #fff;
         border: none;
         border-radius: 5px;
         padding: 10px 20px;
         cursor: pointer;
+
+      }
+      &__graph{
+        background-color: $graph-color;
         &:hover {
-          background: darken($primary-color, 10%);
+          background: darken($graph-color, 10%);
         }
       }
+      &__delete{
+        background-color: $danger-color;
+        &:hover {
+          background: darken($danger-color, 10%);
+        }
+      }
+      &__logout{
+        background-color: $logout-color;
+        &:hover {
+          background: darken($logout-color, 10%);
+        }
+      }
+
+
       .delete__pass {
         display: flex;
         gap: 10px;
@@ -182,6 +202,123 @@ html, body {
             background: darken($danger-color, 10%);
           }
         }
+      }
+    }
+  }
+}
+
+// account 
+.footer__account {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px;
+  width: 100%;
+  &__graph, &__delete {
+    background: $primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+  .delete__pass {
+    display: flex;
+    gap: 10px;
+    input {
+      flex-grow: 1;
+      padding: 5px;
+    }
+    button {
+      background: $danger-color;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      &:hover {
+        background: darken($danger-color, 10%);
+      }
+    }
+  }
+}
+
+// buttons
+.login {
+  display: flex;
+  justify-content: space-between;
+  &__log-btn, &__sign-btn {
+    color: $primary-color;
+    background: $login-color;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+}
+
+.delete__pass {
+  display: flex;
+
+  gap: 15px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &::placeholder {
+      color: #aaa;
+      font-style: italic;
+    }
+
+    &:focus {
+      border-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &.delete__submit {
+      background-color: $danger-color;
+      color: white;
+
+      &:hover {
+        background-color: darken($danger-color, 10%);
+      }
+    }
+
+   &.delete__cancel {
+      background-color: $logout-color;
+      color: #333;
+
+      &:hover {
+        background-color: darken($logout-color, 10%);
       }
     }
   }
