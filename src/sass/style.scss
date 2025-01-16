@@ -104,23 +104,22 @@ html, body {
     gap: 20px;
   }
 
+
   .footer__container{
+    width: 100%;
+    height:100%;
+    position: relative;
     margin: 20px;
     .footer__inputs {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      &__labels {
-        display: flex;
-        justify-content: space-between;
-        label {
-          font-weight: bold;
-        }
-      }
+
       &__input {
         display: flex;
         justify-content: space-between;
         input {
+          position: relative;
           width: calc(50% - 10px);
           padding: 10px;
           margin: 10px 0;
@@ -129,6 +128,7 @@ html, body {
           font-size: 16px;
           outline: none;
           transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          
         }
 
         input:focus {
@@ -250,18 +250,33 @@ html, body {
 .login {
   display: flex;
   justify-content: space-between;
-  &__log-btn, &__sign-btn {
+  width: 100%;
+  height: 100%;
+
+  button{
     color: $primary-color;
-    background: $login-color;
+
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
     cursor: pointer;
+  }
 
-    &:hover {
-      background: darken($primary-color, 10%);
+  &__log-btn{
+
+    background: $login-color;
+   &:hover {
+      background: darken($login-color, 10%);
     }
   }
+  &__sign-btn {
+
+    background: $secondary-color;
+   &:hover {
+      background: darken($secondary-color, 10%);
+    }
+  }
+
 }
 
 .delete__pass {
@@ -322,4 +337,19 @@ html, body {
       }
     }
   }
+}
+
+.error::before {
+  content: "User already exists";
+  position: absolute;
+  top: -25px; /* Adjust above the input */
+  left: 0;
+  width: 100px;
+  color: red;
+  font-size: 12px;
+  font-weight: lighter;
+  text-align: left; /* Align message to the left of the input */
+/* Hide by default */
+  opacity: 1;
+
 }

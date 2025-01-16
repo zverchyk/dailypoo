@@ -10,7 +10,6 @@ class loginView extends View{
     addEventHandler(handler){  
         document.body.addEventListener('click', (event) => {
             if (event.target && event.target.id === 'log-btn') {
-                console.log('event handler')
                 handler()
 
             }
@@ -21,13 +20,22 @@ class loginView extends View{
     addLoginHandler(handler){
         document.body.addEventListener('click', (event) => {
             if (event.target && event.target.id === 'go-to-account') {
-                // console.log(event.target.id)
-                console.log('login handler')
                 handler()
 
             }
           });
           
+    }
+    addSignInHandler(handler){
+        document.body.addEventListener('click', (event) => {
+            if (event.target && event.target.id === 'sign-btn') {
+                handler()
+
+            }
+          });
+    }
+    addExistUserError(){
+        document.querySelector('.user-name-container').classList.add('error')
     }
 
     getUserPass(){
@@ -39,7 +47,9 @@ class loginView extends View{
     _generateMarkUp(){
         return `<div class="footer__inputs">
             <div class="footer__inputs__input">
+                <div class="user-name-container">
                 <input id= "user" type="text" placeholder="email" value="admin">
+                </div>
                 <input id= "password" type="text" placeholder="password" value="admin">
             </div>
             <button id="go-to-account" type="submit">Submit</button>
@@ -47,7 +57,10 @@ class loginView extends View{
     }
 
     _generateLogInMarkUp(){
-        return `<button class="login__log-btn" id="log-btn">Log in</button>`
+        return `            <div class="login">
+                <button class="login__log-btn" id="log-btn">Log in</button>
+                <button class="login__sign-btn" id="sign-btn">Sign in</button>
+            </div>`
     }
 }
 

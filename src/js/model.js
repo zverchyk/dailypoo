@@ -2,11 +2,30 @@ import server from './server'
 
 
 export const state = {
-    user: '',
-    password: '',
-    pooTimes: []
+    mode: undefined,
+    user:{
+        name: '',
+        password: '',
+        id:'',
+    },
+    poo:{
+        id:'',
+        pooTimes:[]
+    }
+
 }
 
+export const resetState = () => {
+    for (const key in state) {
+      if (typeof state[key] === 'object' && !Array.isArray(state[key])) {
+        for (const subKey in state[key]) {
+          state[key][subKey] = Array.isArray(state[key][subKey]) ? [] : '';
+        }
+      } else {
+        state[key] = undefined;
+      }
+    }
+  };
 
 export const checkLogin = async function(){
     // if (!pass){
@@ -14,25 +33,40 @@ export const checkLogin = async function(){
     // if (pass === state.password) return true
     // else false
 
-    const data =  await server.getUser({email:state.user, password: state.password})
+    const data =  await server.getUser({email:state.user.name, password: state.user.password})
     console.log(data)
     if (data.status === "OK") {
-        console.log(`${data.data.email} succesfully loged in!!!!!`)
+        state.user.id = data.data
+        console.log(`${state.user.id}  and ${data.data} succesfully loged in!!!!!`)
         return true
     }else{
         console.log(data.status)
         return false
     }
     
+}
+
+export const doesUserExist = async function(){
+    const isExist = await server.doesUserExist(state.user.name)
+    console.log(isExist)
+    return isExist
 
 }
 
-export const createUser = function(userInfo){
+export const createUser = async function(){
     try{
-        server.createUser(userInfo)
+        const data = await server.createUser({email: state.user.name, password: state.user.password})
+        return data
+        
     }catch(err){
         console.error(err)
     }
     
 }
 
+export const deleteUser = async function(){
+    const status = await server.deleteUser(state.user.id)
+    console.log(status)
+    if(status === "OK")return true
+    else return false
+}

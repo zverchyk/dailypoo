@@ -16,6 +16,8 @@ class accountView extends View{
             }
           });
     }
+
+  
     
     renderloading(){
         this.render(this._generateLoadingMarkUp)
