@@ -7,6 +7,7 @@ import headerView from "./view/headerView";
 import loginView from "./view/loginView";
 import accountView from "./view/accountView";
 import deleteAccountView from "./view/deleteAccountView";
+import toastView from "./view/toastView";
 
 
 
@@ -14,22 +15,40 @@ const controlClock = function(){
     setInterval(mainView.updateClock.bind(mainView), 1000)
     mainView.updateClock()
 }
+const controlPooHeader =async function(){
+    if(!model.state.user.id) return 
+    
+    }
 
-const controlPooButton =function(){
+const controlPooButton = async function(){
     try{
+        if(!model.state.user.id) {
+            toastView.notify("log in to poo)")
+            return }
+        const now = new Date();
+
+        // Get current time in HH:MM:SS format and date in DD:MM:YY format
+        const time = now.toLocaleTimeString('en-GB', { hour12: false });
+        const date = now.toLocaleDateString('en-GB')
+
+        if(model.state.poo.day==='') model.state.poo.day = date
+        model.state.poo.pooTimes.push(time)
+        const pooResposnse = await model.addPoo()
         headerView.renderPoo()
+        toastView.notify(pooResposnse)
     }
     catch(err){
         console.error(err)
     }
 }
 
+
 const controlLogin = function(){
     try{
         loginView.render()
         loginView.scrollToLoginElement()
         model.state.mode = 'log-in'
-        // model.createUser({name: 'jack', password: 'jack'})
+
      
     }
     catch(err){
@@ -46,6 +65,7 @@ const controlSignIn = function(){
 
     }
     catch(err){
+        toastView.notify(`my error:  ${err}`)
         console.error(`my error:  ${err}`)
     }
 }
@@ -60,14 +80,18 @@ const createAccount = async function(){
         const isExist = await model.doesUserExist()
         console.log(isExist)
         if( !isExist) {
-            const data = await model.createUser()
-            console.log(data)
+            const response = await model.createUser()
+            if (!response) {
+                toastView.notify(`user creation failed`)
+                return 
+            }
             accountView.render()
             accountView.scrollToLoginElement()
+            toastView.notify(`Account succesfully created`)
         }
 
         if( isExist) {
-            loginView.addExistUserError()
+            toastView.notify(`user name in use`)
             console.log('user exist')
         }
 
@@ -88,7 +112,19 @@ const enterAccount = async function(){
 
         await model.checkLogin()? accountView.render() : accountView.renderError()
         accountView.scrollToLoginElement()
+        if(await model.checkLogin()) {
+            toastView.notify('you have succesfuly logged in')
+            accountView.render()
+            // load the poo list
+            const list = await model.getPooList()
+            list.forEach(()=> headerView.renderPoo())
 
+        }else{
+            toastView.notify("account doesn't exits")
+        }
+
+   
+       
 
 
     }catch(err){
@@ -115,6 +151,7 @@ const controlLogOut = function(){
     try{
         model.resetState()
        loginView.render(loginView._generateLogInMarkUp())
+       toastView.notify("You succesfully logged out")
 
     }catch(err){
         console.error(err)
@@ -124,8 +161,18 @@ const controlLogOut = function(){
 const controlDeleteAccount = async function(){
     const pass = deleteAccountView.getConfirmedPass()
     if(model.state.user.password === pass){
-       await model.deleteUser(model.state.user.id) ? loginView.render(loginView._generateLogInMarkUp()): console.log('smth went wrong')
+
+    //    await model.deleteUser(model.state.user.id) ? loginView.render(loginView._generateLogInMarkUp()): console.log('smth went wrong')
+
+    if(await model.deleteUser(model.state.user.id)){
+        toastView.notify('account succsesfully deleted')
+        loginView.render(loginView._generateLogInMarkUp())
+
     }else{
+        toastView.notify('smth went wrong try one more time')
+    }
+    }else{
+        toastView.notify('wrong pass')
         console.log("wrong pass")
     }
 

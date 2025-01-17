@@ -47,9 +47,9 @@ class loginView extends View{
     _generateMarkUp(){
         return `<div class="footer__inputs">
             <div class="footer__inputs__input">
-                <div class="user-name-container">
+
                 <input id= "user" type="text" placeholder="email" value="admin">
-                </div>
+
                 <input id= "password" type="text" placeholder="password" value="admin">
             </div>
             <button id="go-to-account" type="submit">Submit</button>

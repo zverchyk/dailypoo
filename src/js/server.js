@@ -1,12 +1,7 @@
 import {TIMEOUT_SEC} from './config.js'
+import {timeout} from './helper.js'
 
-const timeout = function (s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error(`Request took too long! Timeout after ${s} second`));
-    }, s * 1000);
-  });
-};
+// user 
 
 const createUser = async (userInfo) => {
   try{
@@ -18,7 +13,8 @@ const createUser = async (userInfo) => {
   const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
   const data= await response.json();
   if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-    return data
+    console.log(data)
+    return data.data.userId
     }
     catch(err){
     throw(err)
@@ -67,11 +63,54 @@ const getUser = async (userInfo) => {
   }
   }
 
+  // poo count
+  const createPooSession = async function(userId){
+    try{
+      const fetchPro = fetch(`http://localhost:3000/poo/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+      const data= await response.json();
+      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
+        return data.message || 'poo list created'
+      }
+      catch(err){
+        throw(err)
+        }
+  }
+  const addPoo = async function(userId, pooInfo){
+    // try{
+    //   const fetchPro = fetch(`http://localhost:3000/poo?userid=${userId}`, {
+    //     method: 'PUT',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(pooInfo)
+    //   });
+    //   const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+    //   const data= await response.json();
+    //   if (!response.ok)throw new Error(`${data.message} ${response.status}`)
+    //     return data
+    //     }
+    //     catch(err){
+    //     throw(err)
+    //     }
+    const val = await new Promise(resolve => resolve(`${pooInfo} added`))
+    return val
+  }
+
+  const getPooList = async function(userId){
+    return [2,2,2]
+  }
+
+
 module.exports = {
     createUser,
     getUser,
     deleteUser,
-    doesUserExist
+    doesUserExist,
+    createPooSession,
+    addPoo, 
+    getPooList
 }
 
 

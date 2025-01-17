@@ -8,6 +8,24 @@ $login-color: rgb(44, 44, 198);
 $graph-color:  #156030;
 $logout-color: #ccc;
 
+
+
+@use 'toast' as t;
+
+#toast-container {
+  @include t.toast-container;
+}
+
+.toast {
+  @include t.toast;
+}
+
+// Example of custom styling using variables
+.custom-toast {
+  background-color: t.$bg-color;
+  padding: t.$padding;
+}
+
 html, body {
   margin: 0;
   padding: 0;

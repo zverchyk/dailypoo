@@ -9,8 +9,8 @@ export const state = {
         id:'',
     },
     poo:{
-        id:'',
-        pooTimes:[]
+        day:'',
+        times:[]
     }
 
 }
@@ -53,13 +53,17 @@ export const doesUserExist = async function(){
 
 }
 
+// creates user and poo session
 export const createUser = async function(){
     try{
-        const data = await server.createUser({email: state.user.name, password: state.user.password})
-        return data
+        
+        const userId = await server.createUser({email: state.user.name, password: state.user.password})
+        state.user.id = userId
+        await server.createPooSession(state.user.id)
+        return true
         
     }catch(err){
-        console.error(err)
+        throw(err)
     }
     
 }
@@ -69,4 +73,22 @@ export const deleteUser = async function(){
     console.log(status)
     if(status === "OK")return true
     else return false
+}
+
+export const addPoo = async function(){
+    try{
+        const response = await server.addPoo(state.user.id, state.poo)
+        return response
+    }catch(err){
+        console.error(err)
+    }
+}
+
+export const getPooList = async function(){
+    try{
+        const list  = await server.getPooList(state.user.id)
+        return list
+    }catch(err){
+        console.error(err)
+    }
 }
