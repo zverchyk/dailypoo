@@ -1,11 +1,12 @@
-import {TIMEOUT_SEC} from './config.js'
+import {TIMEOUT_SEC, API_URL} from './config.js'
 import {timeout} from './helper.js'
+
 
 // user 
 
 const createUser = async (userInfo) => {
   try{
-  const fetchPro = fetch(`http://localhost:3000/users/new`, {
+  const fetchPro = fetch(`${API_URL}/users/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userInfo)
@@ -24,7 +25,7 @@ const getUser = async (userInfo) => {
   
 
     const params = new URLSearchParams(userInfo)
-    const response = await fetch(`http://localhost:3000/users?${params.toString()}`, {
+    const response = await fetch(`${API_URL}/users?${params.toString()}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -35,8 +36,7 @@ const getUser = async (userInfo) => {
   };
 
   const deleteUser = async (userId) => {
-    console.log('delte user')
-    const response = await fetch(`http://localhost:3000/users/${userId}`, {
+     const response = await fetch(`${API_URL}/users/${userId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -48,7 +48,7 @@ const getUser = async (userInfo) => {
   };
   const doesUserExist = async function(userName){
     try{   
-    const responce = await fetch((`http://localhost:3000/users/exist/?username=${userName}`), {
+    const responce = await fetch((`${API_URL}/users/exist/?username=${userName}`), {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
@@ -67,7 +67,7 @@ const getUser = async (userInfo) => {
   // poo 
   const createPooList = async function(userId){
     try{
-      const fetchPro = fetch(`http://localhost:3000/poo/newlist/${userId}`, {
+      const fetchPro = fetch(`${API_URL}/poo/newlist/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -83,7 +83,7 @@ const getUser = async (userInfo) => {
 
   const createSession = async function(userId, day){
     try{
-        const fetchPro = fetch(`http://localhost:3000/poo/${userId}?day=${day}`, {
+        const fetchPro = fetch(`${API_URL}/poo/${userId}?day=${day}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -99,7 +99,7 @@ const getUser = async (userInfo) => {
   
   const updateSession= async function(userId, pooInfo){
     try{
-      const fetchPro = fetch(`http://localhost:3000/poo/${userId}`, {
+      const fetchPro = fetch(`${API_URL}/poo/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pooInfo)
@@ -117,7 +117,7 @@ const getUser = async (userInfo) => {
 
   const getSession = async function(userId, day){
     try{
-      const fetchPro = fetch(`http://localhost:3000/poo/${userId}?day=${day}`, {
+      const fetchPro = fetch(`${API_URL}/poo/${userId}?day=${day}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
