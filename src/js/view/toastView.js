@@ -6,7 +6,8 @@ class toastView extends View{
 
     notify(message){
         this.message = message
-        this.render()
+        const markup = this._generateMarkUp()
+        this._parentElement.insertAdjacentHTML('beforeend', markup)
             // Remove the toast after 5 seconds
         setTimeout(() => {
            this._clear()

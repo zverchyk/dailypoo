@@ -28,28 +28,31 @@ export const resetState = () => {
   };
 
 export const checkLogin = async function(){
-    // if (!pass){
-    // if (state.user==='0' && state.password ==='0') return true}
-    // if (pass === state.password) return true
-    // else false
+    try{
+        const data =  await server.getUser({email:state.user.name, password: state.user.password})
 
-    const data =  await server.getUser({email:state.user.name, password: state.user.password})
-    console.log(data)
-    if (data.status === "OK") {
-        state.user.id = data.data
-        console.log(`${state.user.id}  and ${data.data} succesfully loged in!!!!!`)
-        return true
-    }else{
-        console.log(data.status)
-        return false
+        if (data.status === "OK") {
+            state.user.id = data.data
+            return true
+        }else{
+            console.log(data.status)
+            return false
+        }
+    }catch(err){
+        throw err
     }
+
     
 }
 
 export const doesUserExist = async function(){
-    const isExist = await server.doesUserExist(state.user.name)
-    console.log(isExist)
-    return isExist
+    try{
+        const isExist = await server.doesUserExist(state.user.name)
+        return isExist
+    }catch(err){
+        throw err
+    }
+
 
 }
 
@@ -57,10 +60,9 @@ export const doesUserExist = async function(){
 export const createUser = async function(){
     try{
         
-        const userId = await server.createUser({email: state.user.name, password: state.user.password})
-        state.user.id = userId
-        await server.createPooSession(state.user.id)
-        return true
+        const response = await server.createUser({email: state.user.name, password: state.user.password})
+        state.user.id = response.data.userId
+        return response.data.message
         
     }catch(err){
         throw(err)
@@ -69,26 +71,78 @@ export const createUser = async function(){
 }
 
 export const deleteUser = async function(){
-    const status = await server.deleteUser(state.user.id)
-    console.log(status)
-    if(status === "OK")return true
-    else return false
-}
-
-export const addPoo = async function(){
     try{
-        const response = await server.addPoo(state.user.id, state.poo)
+
+        const response = await server.deleteUser(state.user.id)
         return response
     }catch(err){
-        console.error(err)
+        throw err
+    }
+
+}
+
+// poo
+export const createPooList = async function(){
+    try{
+        const response = await server.createPooList(state.user.id)
+        return response
+    }catch(err){
+        throw err
+    }
+
+
+}
+export const updateSession = async function(){
+    try{
+        const response = await server.updateSession(state.user.id, state.poo)
+        return response // response.message 
+    }catch(err){
+        throw err
     }
 }
 
-export const getPooList = async function(){
+export const getSession = async function(){
     try{
-        const list  = await server.getPooList(state.user.id)
-        return list
+        
+        const response = await server.getSession(state.user.id, state.poo.day)
+        return response //response.times
     }catch(err){
-        console.error(err)
+        throw err
     }
+}
+
+export const createSession = async function(){
+    try{
+        const response = await server.createSession(state.user.id, state.poo.day)
+        return response
+    }catch(err){
+        throw err
+    }
+}
+
+export const loadOrCreateSession = async function () {
+    try {
+        return await getSession();
+    } catch (err) {
+        console.log('Session not found. Creating a new session...');
+        await createSession();
+        return []; // Return an empty array if a new session is created
+    }
+};
+
+
+export const createToday = function(){
+    const now = new Date();
+
+            // Get current time in HH:MM:SS format and date in DD:MM:YY format
+
+            const day = String(now.getDate()).padStart(2, '0'); // Ensures two digits
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+            const year = now.getFullYear();
+
+            // Combine them into the desired format
+            const date = `${day}${month}${year}`;
+
+            state.poo.day = date
+            
 }

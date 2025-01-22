@@ -11,6 +11,7 @@ $logout-color: #ccc;
 
 
 @use 'toast' as t;
+@use 'buttons' as b;
 
 #toast-container {
   @include t.toast-container;
@@ -18,6 +19,10 @@ $logout-color: #ccc;
 
 .toast {
   @include t.toast;
+}
+
+.cancel-button{
+  @include b.cancel-button;
 }
 
 // Example of custom styling using variables

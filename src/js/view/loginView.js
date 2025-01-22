@@ -30,9 +30,15 @@ class loginView extends View{
         document.body.addEventListener('click', (event) => {
             if (event.target && event.target.id === 'sign-btn') {
                 handler()
-
             }
           });
+    }
+    addCancelHandler(handler){
+        document.body.addEventListener('click', (event)=>{
+            if (event.target && event.target.id === 'go-to-login') {
+                handler()
+            }
+        })
     }
     addExistUserError(){
         document.querySelector('.user-name-container').classList.add('error')
@@ -41,7 +47,6 @@ class loginView extends View{
     getUserPass(){
         const user = this._parentElement.querySelector('#user').value
         const password = this._parentElement.querySelector('#password').value
-        console.log(user, password)
         return [user, password]
     }
     _generateMarkUp(){
@@ -53,6 +58,7 @@ class loginView extends View{
                 <input id= "password" type="text" placeholder="password" value="admin">
             </div>
             <button id="go-to-account" type="submit">Submit</button>
+            <button id="go-to-login" class="cancel-button">Cancel</button>
             </div>`
     }
 

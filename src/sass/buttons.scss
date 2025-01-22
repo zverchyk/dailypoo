@@ -1,0 +1,16 @@
+
+$danger-color: #e74c3c;
+
+
+@mixin cancel-button {
+    background: $danger-color;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+
+    cursor: pointer;
+    &:hover {
+      background: darken($danger-color, 10%);
+    }
+}

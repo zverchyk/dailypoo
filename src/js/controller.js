@@ -15,12 +15,15 @@ const controlClock = function(){
     setInterval(mainView.updateClock.bind(mainView), 1000)
     mainView.updateClock()
 }
-const controlPooHeader =async function(){
-    if(!model.state.user.id) return 
+
+
+// const controlPooHeader =async function(){
+//     if(!model.state.user.id) return 
     
-    }
+//     }
 
 const controlPooButton = async function(){
+
     try{
         if(!model.state.user.id) {
             toastView.notify("log in to poo)")
@@ -29,15 +32,14 @@ const controlPooButton = async function(){
 
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
-        const date = now.toLocaleDateString('en-GB')
+        model.state.poo.times.push(time)
 
-        if(model.state.poo.day==='') model.state.poo.day = date
-        model.state.poo.pooTimes.push(time)
-        const pooResposnse = await model.addPoo()
+        const pooResposnse = await model.updateSession()
         headerView.renderPoo()
         toastView.notify(pooResposnse)
     }
     catch(err){
+        toastView.notify(err)
         console.error(err)
     }
 }
@@ -48,6 +50,7 @@ const controlLogin = function(){
         loginView.render()
         loginView.scrollToLoginElement()
         model.state.mode = 'log-in'
+        
 
      
     }
@@ -61,6 +64,7 @@ const controlSignIn = function(){
         loginView.render()
         loginView.scrollToLoginElement()
         model.state.mode = 'sign-in'
+  
 
 
     }
@@ -73,6 +77,7 @@ const controlSignIn = function(){
 
 // subfunctions 
 const createAccount = async function(){
+    
     try{
         const [ user, pass]  = loginView.getUserPass()
         model.state.user.name = user
@@ -80,11 +85,19 @@ const createAccount = async function(){
         const isExist = await model.doesUserExist()
         console.log(isExist)
         if( !isExist) {
-            const response = await model.createUser()
-            if (!response) {
+            const userResponse = await model.createUser()
+            const pooResponse  = await model.createPooList()
+      
+
+            if (!userResponse || !pooResponse) {
                 toastView.notify(`user creation failed`)
                 return 
             }
+
+            toastView.notify(userResponse)
+            toastView.notify(pooResponse)
+            const sessionResponse = await model.createSession()
+            toastView.notify(sessionResponse)
             accountView.render()
             accountView.scrollToLoginElement()
             toastView.notify(`Account succesfully created`)
@@ -92,50 +105,57 @@ const createAccount = async function(){
 
         if( isExist) {
             toastView.notify(`user name in use`)
-            console.log('user exist')
         }
 
         
     }catch(err){
+        toastView.notify(err)
         console.error(`my error:  ${err}`)
     }
 }
 
-const enterAccount = async function(){
-    try{
-        if(!model.state.user.name && !model.state.user.password) {
-            const [ user, pass]  = loginView.getUserPass()
-            model.state.user.name = user
-            model.state.user.password = pass
+const loginAccount = async function () {
+    try {
+            // Ensure user credentials are available
+        if (!model.state.user.name || !model.state.user.password) {
+            const [user, pass] = loginView.getUserPass();
+            model.state.user.name = user;
+            model.state.user.password = pass;
         }
 
-
-        await model.checkLogin()? accountView.render() : accountView.renderError()
-        accountView.scrollToLoginElement()
-        if(await model.checkLogin()) {
-            toastView.notify('you have succesfuly logged in')
-            accountView.render()
-            // load the poo list
-            const list = await model.getPooList()
-            list.forEach(()=> headerView.renderPoo())
-
-        }else{
-            toastView.notify("account doesn't exits")
+        // Check login credentials
+        const isLoggedIn = await model.checkLogin();
+        if (!isLoggedIn) {
+            toastView.notify("Account doesn't exist");
+            return;
         }
 
-   
-       
+        toastView.notify('You have successfully logged in');
+        accountView.render();
+        accountView.scrollToLoginElement();
 
+        // Load or create session
+        const sessionList = await model.loadOrCreateSession();
 
-    }catch(err){
-        console.error(`my error:  ${err}`)
+        // Update state with session times
+        model.state.poo.times = sessionList;
+        console.log('Session list:', sessionList);
+        console.log('Model session times:', model.state.poo.times);
+
+        // Render sessions from the database
+        sessionList.forEach(() => headerView.renderPoo());
+    } catch (err) {
+        toastView.notify('An error occurred. Please try again.');
+        console.error(`Error in loginAccount: ${err.message || err}`);
     }
-}
+};
 
-const controlAccount = async function(){
-    console.log(model.state.mode)
+
+
+
+const controlEntryAccount = async function(){
     if (model.state.mode === 'sign-in') await createAccount()
-    if (model.state.mode === 'log-in') await enterAccount()
+    if (model.state.mode === 'log-in') await loginAccount()
 
 }
 
@@ -147,11 +167,19 @@ const controlDeleteAccountWindow =function(){
     }
 }
 
+const controlEntryWindow =function(){
+    try{
+        loginView.render(loginView._generateLogInMarkUp())
+    }catch(err){
+        toastView.notify(err)
+    }
+}
 const controlLogOut = function(){
     try{
-        model.resetState()
+       model.resetState()
        loginView.render(loginView._generateLogInMarkUp())
        toastView.notify("You succesfully logged out")
+       headerView.clearPoo()
 
     }catch(err){
         console.error(err)
@@ -181,10 +209,12 @@ const controlDeleteAccount = async function(){
 
 
 const init = function(){
+    model.createToday()
     controlClock()
     mainView.addHandlerRender(controlPooButton)
+    loginView.addCancelHandler(controlEntryWindow)
     loginView.addEventHandler(controlLogin)
-    loginView.addLoginHandler(controlAccount )
+    loginView.addLoginHandler(controlEntryAccount)
     loginView.addSignInHandler(controlSignIn)
     deleteAccountView.addDeleteAccountWindowHandler(controlDeleteAccountWindow)
     accountView.addLogoutHandler(controlLogOut)
