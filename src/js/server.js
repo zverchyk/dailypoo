@@ -13,8 +13,10 @@ const createUser = async (userInfo) => {
   });
   const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
   const data= await response.json();
+  console.log(data)
   if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-    return data
+  if(data.status ==='failed') throw {message: data.data}
+  return data.data
     }
     catch(err){
     throw(err)
@@ -34,7 +36,11 @@ const loginUser = async (userInfo) =>{
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
 
+    if (!response.ok)throw new Error(`${data.message} ${response.status}`)
+    if(data.status ==='failed') throw {message: data.data}
     return data.data
+
+
   }catch(err){
     throw (err)
   }
@@ -44,14 +50,17 @@ const loginUser = async (userInfo) =>{
   const deleteUser = async (userId) => {
     try{
   
-    const response = await fetch(`${API_URL}/users/${userId}`, {
+    const fetchPro = await fetch(`${API_URL}/users/${userId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     });
   
-    const data = await response.json();
-    console.log(data)
-    return data.message
+    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+    const data= await response.json();
+
+    if (!response.ok)throw new Error(`${data.message} ${response.status}`)
+    if(data.status ==='failed') throw {message: data.data}
+    return data.data
 
   }catch(err){
     throw err
@@ -74,7 +83,10 @@ const loginUser = async (userInfo) =>{
         const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
         const data= await response.json();
     
-        return data.data
+      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
+      if(data.status ==='failed') throw {message: data.data}
+      return data.data
+
       }catch(err){
         throw (err)
       }

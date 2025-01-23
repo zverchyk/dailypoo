@@ -49,7 +49,7 @@ export const loginUser = async function(){
     console.log(state)
     try {
         const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
-
+        
         state.user.id = response.userId
         if (typeof(response.session) === String()) {
             return response.session    

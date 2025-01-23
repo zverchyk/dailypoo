@@ -24,8 +24,10 @@ const controlClock = function(){
 
 const controlPooButton = async function(){
     if(!model.state.user.id) {
-        toastView.notify("log in to poo)")
-        return }
+        toastView.notify("log in or sing in to poo)")
+        accountView.scrollToBottom()
+        return
+     }
         const now = new Date();
 
     try{
@@ -48,7 +50,7 @@ const controlPooButton = async function(){
 const controlLogin = function(){
     try{
         loginView.render()
-        loginView.scrollToLoginElement()
+        loginView.scrollToElement()
         model.state.mode = 'log-in'
         
 
@@ -62,7 +64,7 @@ const controlLogin = function(){
 const controlSignIn = function(){
     try{
         loginView.render()
-        loginView.scrollToLoginElement()
+        loginView.scrollToElement()
         model.state.mode = 'sign-in'
   
     }
@@ -88,7 +90,7 @@ const createAccount = async function(){
 
         await model.createUser()
         accountView.render()
-        accountView.scrollToLoginElement()
+        accountView.scrollToElement()
         toastView.notify(`Account succesfully created`)
         
 
@@ -112,7 +114,7 @@ const loginAccount = async function () {
 
         toastView.notify('You have successfully logged in');
         accountView.render();
-        accountView.scrollToLoginElement();
+        accountView.scrollToElement();
 
         // Render sessions from the database
         model.state.poo.times.forEach(() => headerView.renderPoo());
@@ -126,7 +128,7 @@ const loginAccount = async function () {
 
 const controlAccountWindow = function(){
     accountView.render();
-    accountView.scrollToLoginElement();
+    accountView.scrollToElement();
 }
 
 
