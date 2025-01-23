@@ -26,7 +26,7 @@ const createUser = async (userInfo) => {
 const loginUser = async (userInfo) =>{
   try{
   const params = new URLSearchParams(userInfo)
-    const fetchPro = await fetch(`http://localhost:3000/users/?${params.toString()}`, {
+    const fetchPro = await fetch(`${API_URL}/users/?${params.toString()}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -44,7 +44,7 @@ const loginUser = async (userInfo) =>{
   const deleteUser = async (userId) => {
     try{
   
-    const response = await fetch(`http://localhost:3000/users/${userId}`, {
+    const response = await fetch(`${API_URL}/users/${userId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -66,7 +66,7 @@ const loginUser = async (userInfo) =>{
   const logout = async()=>{
     try{
 
-        const fetchPro = await fetch(`http://localhost:3000/users/logout`, {
+        const fetchPro = await fetch(`${API_URL}/users/logout`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -85,7 +85,7 @@ const loginUser = async (userInfo) =>{
 // update session 
   const updateSession= async function(pooInfo){
     try{
-      const fetchPro = fetch(`http://localhost:3000/poo/update`, {
+      const fetchPro = fetch(`${API_URL}/poo/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pooInfo)
