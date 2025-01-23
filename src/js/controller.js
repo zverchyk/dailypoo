@@ -82,11 +82,17 @@ const controlEntryAccount = async function(){
 
 // subfunctions 
 const createAccount = async function(){
+    const [ user, pass]  = loginView.getUserPass()
+    if (!user || !pass) {
+        toastView.notify('Please enter your email and password');
+        return
+    }
+    model.state.user.name = user
+    model.state.user.password = pass
 
     try{
-        const [ user, pass]  = loginView.getUserPass()
-        model.state.user.name = user
-        model.state.user.password = pass
+        
+
 
         await model.createUser()
         accountView.render()
@@ -102,14 +108,21 @@ const createAccount = async function(){
 }
 
 const loginAccount = async function () {
-    // Ensure user credentials are available
-    if (!model.state.user.name || !model.state.user.password) {
+    
         const [user, pass] = loginView.getUserPass();
+        if (!user || !pass) {
+            toastView.notify('Please enter your email and password');
+            return 
+        }
         model.state.user.name = user;
         model.state.user.password = pass;
-    }
+
+    
     try {
+
         const response = await model.loginUser()
+        if (response.status === 'failed') throw new Error(response.data)
+
         toastView.notify(response)
 
         toastView.notify('You have successfully logged in');

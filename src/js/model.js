@@ -34,8 +34,8 @@ export const createUser = async function(){
     try{
         
         const response = await server.createUser({email: state.user.name, password: state.user.password, day: state.poo.day})
-        state.user.id = response.data.userId
-        return response.data.message
+        state.user.id = response.userId
+        return response.message
         
     }catch(err){
         throw(err)
@@ -46,10 +46,10 @@ export const createUser = async function(){
 // logins user and gets session
 
 export const loginUser = async function(){
-    console.log(state)
+
     try {
         const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
-        
+
         state.user.id = response.userId
         if (typeof(response.session) === String()) {
             return response.session    
