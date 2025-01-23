@@ -19,6 +19,14 @@ class deleteAccountView extends View{
             }
           });
     }
+    addCancelDeleteHandler(handler){
+        document.body.addEventListener('click', (event) => {
+            if (event.target && event.target.id === 'go-to-account') {
+                handler()
+
+            }
+          });
+    }
     getConfirmedPass(){
         return document.getElementById('confirmation-pass').value
     }

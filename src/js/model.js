@@ -25,42 +25,15 @@ export const resetState = () => {
         state[key] = undefined;
       }
     }
+    console.log(state)
   };
 
-export const checkLogin = async function(){
-    try{
-        const data =  await server.getUser({email:state.user.name, password: state.user.password})
-
-        if (data.status === "OK") {
-            state.user.id = data.data
-            return true
-        }else{
-            console.log(data.status)
-            return false
-        }
-    }catch(err){
-        throw err
-    }
-
-    
-}
-
-export const doesUserExist = async function(){
-    try{
-        const isExist = await server.doesUserExist(state.user.name)
-        return isExist
-    }catch(err){
-        throw err
-    }
-
-
-}
 
 // creates user and poo session
 export const createUser = async function(){
     try{
         
-        const response = await server.createUser({email: state.user.name, password: state.user.password})
+        const response = await server.createUser({email: state.user.name, password: state.user.password, day: state.poo.day})
         state.user.id = response.data.userId
         return response.data.message
         
@@ -70,6 +43,26 @@ export const createUser = async function(){
     
 }
 
+// logins user and gets session
+
+export const loginUser = async function(){
+    console.log(state)
+    try {
+        const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
+
+        state.user.id = response.userId
+        if (typeof(response.session) === String()) {
+            return response.session    
+        } 
+ 
+        state.poo.times = response.session
+        return 'data retrived'
+        
+    } catch (err) {
+        throw err;
+    }
+}
+// deletes user and poo data 
 export const deleteUser = async function(){
     try{
 
@@ -81,56 +74,29 @@ export const deleteUser = async function(){
 
 }
 
-// poo
-export const createPooList = async function(){
+export const logout = async function(){
     try{
-        const response = await server.createPooList(state.user.id)
+        const response = await server.logout()
         return response
     }catch(err){
         throw err
     }
-
-
 }
+
+
+// POO
+
+// updates session 
 export const updateSession = async function(){
     try{
-        const response = await server.updateSession(state.user.id, state.poo)
-        return response // response.message 
+        const response = await server.updateSession({userId: state.user.id, day: state.poo.day, times: state.poo.times})
+        return response 
     }catch(err){
         throw err
     }
 }
 
-export const getSession = async function(){
-    try{
-        
-        const response = await server.getSession(state.user.id, state.poo.day)
-        return response //response.times
-    }catch(err){
-        throw err
-    }
-}
-
-export const createSession = async function(){
-    try{
-        const response = await server.createSession(state.user.id, state.poo.day)
-        return response
-    }catch(err){
-        throw err
-    }
-}
-
-export const loadOrCreateSession = async function () {
-    try {
-        return await getSession();
-    } catch (err) {
-        console.log('Session not found. Creating a new session...');
-        await createSession();
-        return []; // Return an empty array if a new session is created
-    }
-};
-
-
+// creates todays
 export const createToday = function(){
     const now = new Date();
 

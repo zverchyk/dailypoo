@@ -23,13 +23,12 @@ const controlClock = function(){
 //     }
 
 const controlPooButton = async function(){
-
-    try{
-        if(!model.state.user.id) {
-            toastView.notify("log in to poo)")
-            return }
+    if(!model.state.user.id) {
+        toastView.notify("log in to poo)")
+        return }
         const now = new Date();
 
+    try{
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
         model.state.poo.times.push(time)
@@ -37,6 +36,7 @@ const controlPooButton = async function(){
         const pooResposnse = await model.updateSession()
         headerView.renderPoo()
         toastView.notify(pooResposnse)
+        
     }
     catch(err){
         toastView.notify(err)
@@ -44,7 +44,7 @@ const controlPooButton = async function(){
     }
 }
 
-
+// ENTERING ACCOUNT 
 const controlLogin = function(){
     try{
         loginView.render()
@@ -65,47 +65,32 @@ const controlSignIn = function(){
         loginView.scrollToLoginElement()
         model.state.mode = 'sign-in'
   
-
-
     }
     catch(err){
         toastView.notify(`my error:  ${err}`)
         console.error(`my error:  ${err}`)
     }
 }
+const controlEntryAccount = async function(){
+    model.createToday()
+    if (model.state.mode === 'sign-in') await createAccount()
+    if (model.state.mode === 'log-in') await loginAccount()
 
+}
 
 // subfunctions 
 const createAccount = async function(){
-    
+
     try{
         const [ user, pass]  = loginView.getUserPass()
         model.state.user.name = user
         model.state.user.password = pass
-        const isExist = await model.doesUserExist()
-        console.log(isExist)
-        if( !isExist) {
-            const userResponse = await model.createUser()
-            const pooResponse  = await model.createPooList()
-      
 
-            if (!userResponse || !pooResponse) {
-                toastView.notify(`user creation failed`)
-                return 
-            }
-
-            toastView.notify(userResponse)
-            toastView.notify(pooResponse)
-            const sessionResponse = await model.createSession()
-            toastView.notify(sessionResponse)
-            accountView.render()
-            accountView.scrollToLoginElement()
-            toastView.notify(`Account succesfully created`)
-        }
-
-        if( isExist) {
-            toastView.notify(`user name in use`)
-        }
+        await model.createUser()
+        accountView.render()
+        accountView.scrollToLoginElement()
+        toastView.notify(`Account succesfully created`)
+        
 
         
     }catch(err){
@@ -115,49 +100,44 @@ const createAccount = async function(){
 }
 
 const loginAccount = async function () {
+    // Ensure user credentials are available
+    if (!model.state.user.name || !model.state.user.password) {
+        const [user, pass] = loginView.getUserPass();
+        model.state.user.name = user;
+        model.state.user.password = pass;
+    }
     try {
-            // Ensure user credentials are available
-        if (!model.state.user.name || !model.state.user.password) {
-            const [user, pass] = loginView.getUserPass();
-            model.state.user.name = user;
-            model.state.user.password = pass;
-        }
-
-        // Check login credentials
-        const isLoggedIn = await model.checkLogin();
-        if (!isLoggedIn) {
-            toastView.notify("Account doesn't exist");
-            return;
-        }
+        const response = await model.loginUser()
+        toastView.notify(response)
 
         toastView.notify('You have successfully logged in');
         accountView.render();
         accountView.scrollToLoginElement();
 
-        // Load or create session
-        const sessionList = await model.loadOrCreateSession();
-
-        // Update state with session times
-        model.state.poo.times = sessionList;
-        console.log('Session list:', sessionList);
-        console.log('Model session times:', model.state.poo.times);
-
         // Render sessions from the database
-        sessionList.forEach(() => headerView.renderPoo());
+        model.state.poo.times.forEach(() => headerView.renderPoo());
+
     } catch (err) {
-        toastView.notify('An error occurred. Please try again.');
+        toastView.notify(err);
         console.error(`Error in loginAccount: ${err.message || err}`);
     }
 };
+// ENTERING ACCOUNT
 
-
-
-
-const controlEntryAccount = async function(){
-    if (model.state.mode === 'sign-in') await createAccount()
-    if (model.state.mode === 'log-in') await loginAccount()
-
+const controlAccountWindow = function(){
+    accountView.render();
+    accountView.scrollToLoginElement();
 }
+
+
+const controlEntryWindow =function(){
+    try{
+        loginView.render(loginView._generateLogInMarkUp())
+    }catch(err){
+        toastView.notify(err)
+    }
+}
+
 
 const controlDeleteAccountWindow =function(){
     try{
@@ -167,18 +147,13 @@ const controlDeleteAccountWindow =function(){
     }
 }
 
-const controlEntryWindow =function(){
+
+const controlLogOut = async function(){
     try{
-        loginView.render(loginView._generateLogInMarkUp())
-    }catch(err){
-        toastView.notify(err)
-    }
-}
-const controlLogOut = function(){
-    try{
+       const response =await model.logout()
        model.resetState()
        loginView.render(loginView._generateLogInMarkUp())
-       toastView.notify("You succesfully logged out")
+       toastView.notify(response)
        headerView.clearPoo()
 
     }catch(err){
@@ -186,25 +161,28 @@ const controlLogOut = function(){
     }
 }
 
+
+
+// DELETING USER AND POO DATA
 const controlDeleteAccount = async function(){
     const pass = deleteAccountView.getConfirmedPass()
-    if(model.state.user.password === pass){
-
-    //    await model.deleteUser(model.state.user.id) ? loginView.render(loginView._generateLogInMarkUp()): console.log('smth went wrong')
-
-    if(await model.deleteUser(model.state.user.id)){
-        toastView.notify('account succsesfully deleted')
+    if(model.state.user.password !== pass){
+        toastView.notify('wrong password')
+        return 
+    }
+    try{
+        const deleteConfirm = await model.deleteUser()
+        headerView.clearPoo()
         loginView.render(loginView._generateLogInMarkUp())
-
-    }else{
-        toastView.notify('smth went wrong try one more time')
+        toastView.notify(deleteConfirm)
+    }catch(err){
+        toastView.notify(err)
     }
-    }else{
-        toastView.notify('wrong pass')
-        console.log("wrong pass")
-    }
+    
 
 }
+
+
 
 
 
@@ -219,6 +197,7 @@ const init = function(){
     deleteAccountView.addDeleteAccountWindowHandler(controlDeleteAccountWindow)
     accountView.addLogoutHandler(controlLogOut)
     deleteAccountView.addDeleteAccountHandler(controlDeleteAccount)
+    deleteAccountView.addCancelDeleteHandler(controlAccountWindow)
 
 
 }

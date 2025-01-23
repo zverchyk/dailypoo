@@ -1,8 +1,9 @@
 import {TIMEOUT_SEC} from './config.js'
 import {timeout} from './helper.js'
 
-// user 
+// USER
 
+// create user , poo list and todays session
 const createUser = async (userInfo) => {
   try{
   const fetchPro = fetch(`http://localhost:3000/users/new`, {
@@ -20,22 +21,29 @@ const createUser = async (userInfo) => {
     }
 };
 
-const getUser = async (userInfo) => {
-  
 
-    const params = new URLSearchParams(userInfo)
-    const response = await fetch(`http://localhost:3000/users?${params.toString()}`, {
+// logins user and gets/creates session 
+const loginUser = async (userInfo) =>{
+  try{
+  const params = new URLSearchParams(userInfo)
+    const fetchPro = await fetch(`http://localhost:3000/users/?${params.toString()}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
   
-    const data = await response.json();
+    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+    const data= await response.json();
 
-    return data
+    return data.data
+  }catch(err){
+    throw (err)
+  }
   };
 
+// deletes user and poo data
   const deleteUser = async (userId) => {
-    console.log('delte user')
+    try{
+  
     const response = await fetch(`http://localhost:3000/users/${userId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -43,63 +51,41 @@ const getUser = async (userInfo) => {
   
     const data = await response.json();
     console.log(data)
-    return data.status
-
-  };
-  const doesUserExist = async function(userName){
-    try{   
-    const responce = await fetch((`http://localhost:3000/users/exist/?username=${userName}`), {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
-    const data = await responce.json();
-    // returns true if exist and false if not
-    if(data.status==="OK") return data.exist
+    return data.message
 
   }catch(err){
-    console.error(err)
-    throw(err)
-  }
+    throw err
   }
 
 
 
-  // poo 
-  const createPooList = async function(userId){
-    try{
-      const fetchPro = fetch(`http://localhost:3000/poo/newlist/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
-      const data= await response.json();
-      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-        return data.data.message || 'poo list created'
-      }
-      catch(err){
-        throw(err)
-        }
-  } 
+  };
 
-  const createSession = async function(userId, day){
+  // logingout 
+
+  const logout = async()=>{
     try{
-        const fetchPro = fetch(`http://localhost:3000/poo/${userId}?day=${day}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
-      const data= await response.json();
-      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-        return data.data || 'session created'
+
+        const fetchPro = await fetch(`http://localhost:3000/users/logout`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+      
+        const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+        const data= await response.json();
+    
+        return data.data
+      }catch(err){
+        throw (err)
       }
-      catch(err){
-        throw(err)
-        }
-  } 
-  
-  const updateSession= async function(userId, pooInfo){
+  }
+
+  // POO
+
+// update session 
+  const updateSession= async function(pooInfo){
     try{
-      const fetchPro = fetch(`http://localhost:3000/poo/${userId}`, {
+      const fetchPro = fetch(`http://localhost:3000/poo/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pooInfo)
@@ -107,7 +93,7 @@ const getUser = async (userInfo) => {
       const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
       const data= await response.json();
       if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-        return data.data.message
+        return data.data
         }
         catch(err){
         throw(err)
@@ -115,34 +101,18 @@ const getUser = async (userInfo) => {
 
   }
 
-  const getSession = async function(userId, day){
-    try{
-      const fetchPro = fetch(`http://localhost:3000/poo/${userId}?day=${day}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
-      const data= await response.json();
-      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-      return data.data.times
-      }
-      catch(err){
-        throw (err)
-        }
-  }
 
 
 
 
 module.exports = {
     createUser,
-    getUser,
+    loginUser,
     deleteUser,
-    doesUserExist,
-    createPooList,
-    getSession,
     updateSession,
-    createSession
+    logout
+
+
 }
 
 
