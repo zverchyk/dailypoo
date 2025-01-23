@@ -1,4 +1,4 @@
-import {TIMEOUT_SEC} from './config.js'
+import {TIMEOUT_SEC, API_URL} from './config.js'
 import {timeout} from './helper.js'
 
 // USER
@@ -6,7 +6,7 @@ import {timeout} from './helper.js'
 // create user , poo list and todays session
 const createUser = async (userInfo) => {
   try{
-  const fetchPro = fetch(`http://localhost:3000/users/new`, {
+  const fetchPro = fetch(`${API_URL}/users/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userInfo)

@@ -53,9 +53,9 @@ class loginView extends View{
         return `<div class="footer__inputs">
             <div class="footer__inputs__input">
 
-                <input id= "user" type="text" placeholder="email" value="admin">
+                <input id= "user" type="text" placeholder="email" >
 
-                <input id= "password" type="text" placeholder="password" value="admin">
+                <input id= "password" type="text" placeholder="password">
             </div>
             <button id="go-to-account" type="submit">Submit</button>
             <button id="go-to-login" class="cancel-button">Cancel</button>
