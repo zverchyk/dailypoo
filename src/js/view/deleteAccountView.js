@@ -21,7 +21,7 @@ class deleteAccountView extends View{
     }
     addCancelDeleteHandler(handler){
         document.body.addEventListener('click', (event) => {
-            if (event.target && event.target.id === 'go-to-account') {
+            if (event.target && event.target.id === 'return-to-account') {
                 handler()
 
             }
@@ -35,7 +35,7 @@ class deleteAccountView extends View{
         return     `<div class="delete__pass">
         <input type="text" id='confirmation-pass' placeholder="type your password">
         <button id='delete-submit' class="delete__submit">Submit</button>
-        <button id="go-to-account" class="delete__cancel">Cancel</button>
+        <button id="return-to-account" class="delete__cancel">Cancel</button>
     </div>`
     }
 }
