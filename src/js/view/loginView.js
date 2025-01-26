@@ -26,7 +26,7 @@ class loginView extends View{
           });
           
     }
-    addSignInHandler(handler){
+    addSignUpHandler(handler){
         document.body.addEventListener('click', (event) => {
             if (event.target && event.target.id === 'sign-btn') {
                 handler()
@@ -57,15 +57,17 @@ class loginView extends View{
 
                 <input id= "password" type="text" placeholder="password">
             </div>
-            <button id="go-to-account" type="submit">Submit</button>
-            <button id="go-to-login" class="cancel-button">Cancel</button>
+            <div class="footer__inputs__buttons">
+                <button id="go-to-account" type="submit" class="submit-button">Submit</button>
+                <button id="go-to-login" class="cancel-button">Cancel</button>
+            </div>
             </div>`
     }
 
     _generateLogInMarkUp(){
         return `            <div class="login">
                 <button class="login__log-btn" id="log-btn">Log in</button>
-                <button class="login__sign-btn" id="sign-btn">Sign in</button>
+                <button class="login__sign-btn" id="sign-btn">Sign up</button>
             </div>`
     }
 }

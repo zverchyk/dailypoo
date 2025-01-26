@@ -1,5 +1,5 @@
 $wrapper-padding: 20px;
-$container-max-width: 1200px;
+$container-max-width: 1300px;
 $font-family: Arial, sans-serif;
 $primary-color: #f3eded;
 $secondary-color: #2ecc71;
@@ -9,9 +9,19 @@ $graph-color:  #156030;
 $logout-color: #ccc;
 
 
-
+@use 'spinner' as s;
 @use 'toast' as t;
 @use 'buttons' as b;
+@use 'userBlock' as u;
+
+.user-block {
+  @include u.user-block;
+
+}
+
+.lds-default{
+  @include s.lds-default;
+}
 
 #toast-container {
   @include t.toast-container;
@@ -21,6 +31,9 @@ $logout-color: #ccc;
   @include t.toast;
 }
 
+.submit-button{
+  @include b.submit-button;
+}
 .cancel-button{
   @include b.cancel-button;
 }
@@ -43,8 +56,12 @@ html, body {
 
 
 .container {
+  display: flex;
+  position: relative;
   max-width: $container-max-width;
   margin: 0 auto;
+
+
 }
 
 .wrapper {
@@ -125,22 +142,67 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    position: relative;
+    width: 100%;
   }
 
 
   .footer__container{
-    width: 100%;
-    height:100%;
-    position: relative;
-    margin: 20px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; // Space evenly between children
+    align-items: center; // Align items vertically in the center
+    margin: 0 auto; // Center within the footer
+    width: 100%; // Full width of the parent
+    max-width: $container-max-width; 
+    padding: 15px;
+
+    > * {
+      display: flex;
+      flex:33.33%;
+      margin: 0 2%;
+    }
+    .login {
+      display:flex;
+      justify-content: center;
+
+      button{
+        color: $primary-color;
+        margin: 0 1%;
+        border: none;
+        border-radius: 5px;
+        padding: 15px 30px;
+        cursor: pointer;
+      }
+    
+      &__log-btn{
+    
+        background: $login-color;
+       &:hover {
+          background: darken($login-color, 10%);
+        }
+      }
+      &__sign-btn {
+    
+        background: $secondary-color;
+       &:hover {
+          background: darken($secondary-color, 10%);
+        }
+      }
+    
+    }
     .footer__inputs {
       display: flex;
+      width: 50%;
       flex-direction: column;
       gap: 10px;
-
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
       &__input {
         display: flex;
-        justify-content: space-between;
+
         input {
           position: relative;
           width: calc(50% - 10px);
@@ -159,19 +221,11 @@ html, body {
           box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
       }
-      button[type="submit"] {
-        align-self: center;
-        background: $secondary-color;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
 
-        cursor: pointer;
-        &:hover {
-          background: darken($secondary-color, 10%);
-        }
-      }
+
+    }
+    .advice-block{
+      display: block;
     }
 
     .footer__account {
@@ -270,37 +324,7 @@ html, body {
 }
 
 // buttons
-.login {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
 
-  button{
-    color: $primary-color;
-
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
-
-  &__log-btn{
-
-    background: $login-color;
-   &:hover {
-      background: darken($login-color, 10%);
-    }
-  }
-  &__sign-btn {
-
-    background: $secondary-color;
-   &:hover {
-      background: darken($secondary-color, 10%);
-    }
-  }
-
-}
 
 .delete__pass {
   display: flex;

@@ -51,12 +51,11 @@ export const loginUser = async function(){
         const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
 
         state.user.id = response.userId
-        if (typeof(response.session) === String()) {
-            return response.session    
+        if (typeof(response.session) !== String()) {
+            state.poo.times = response.session
+            return response.message
         } 
- 
-        state.poo.times = response.session
-        return 'data retrived'
+        return `${response.message} \n ${response.session}`
         
     } catch (err) {
         throw err;
@@ -95,6 +94,13 @@ export const updateSession = async function(){
         throw err
     }
 }
+// ADVICE 
+
+export const getAdvice = async function(){
+    const advice = await server.getAdvice()
+    return advice
+
+}
 
 // creates todays
 export const createToday = function(){
@@ -112,3 +118,5 @@ export const createToday = function(){
             state.poo.day = date
             
 }
+
+

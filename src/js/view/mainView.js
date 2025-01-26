@@ -13,6 +13,9 @@ class mainView{
      
         this._parentElement.textContent = `${hours}:${minutes}:${seconds}`;
       }
+    changePooIcon(icon){
+        this._pooButton.textContent = icon
+    }
 
     addHandlerRender(handler){
   

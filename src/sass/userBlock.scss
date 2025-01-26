@@ -1,0 +1,68 @@
+
+
+@mixin user-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #ddd; // Light border for structure
+    border-radius: 8px; // Rounded corners
+    background-color: #f9f9f9; // Subtle background color
+    width: 300px; // Fixed width for consistency
+    font-family: Arial, sans-serif;
+  
+    &__info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  
+      .user-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%; // Circular icon
+        background-color: #bbb; // Placeholder color for the icon
+      }
+  
+      .user-name {
+        flex-grow: 1; // Allow this to expand as needed
+        font-size: 16px;
+        color: #333;
+      }
+    }
+  
+    &__icon-choice {
+      display: flex;
+      gap: 10px;
+  
+      .icon1,
+      .icon2 {
+        width: 24px;
+        height: 24px;
+        background-color: #eee; // Placeholder color
+        border-radius: 4px; // Slight rounding for icons
+        cursor: pointer;
+  
+        &:hover {
+          background-color: #ddd; // Slightly darker on hover
+        }
+      }
+    }
+  
+    .user-edit {
+      align-self: flex-end; // Align button to the right
+      padding: 5px 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff; // Primary button color
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+  
+      &:hover {
+        background-color: #0056b3; // Darker on hover
+      }
+    }
+  }
+  

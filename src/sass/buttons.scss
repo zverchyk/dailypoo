@@ -1,6 +1,6 @@
 
 $danger-color: #e74c3c;
-
+$secondary-color: #2ecc71;
 
 @mixin cancel-button {
     background: $danger-color;
@@ -8,9 +8,23 @@ $danger-color: #e74c3c;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
+    
 
     cursor: pointer;
     &:hover {
       background: darken($danger-color, 10%);
     }
+}
+
+@mixin submit-button{
+  background: $secondary-color;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+
+        cursor: pointer;
+        &:hover {
+          background: darken($secondary-color, 10%);
+        }
 }

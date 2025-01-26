@@ -50,21 +50,18 @@ const controlPooButton = async function(){
 const controlLogin = function(){
     try{
         loginView.render()
-        loginView.scrollToElement()
-        model.state.mode = 'log-in'
-        
 
-     
+        model.state.mode = 'log-in'
     }
     catch(err){
         console.error(`my error:  ${err}`)
     }
 }
 
-const controlSignIn = function(){
+const controlSignUp = function(){
     try{
         loginView.render()
-        loginView.scrollToElement()
+
         model.state.mode = 'sign-in'
   
     }
@@ -91,19 +88,21 @@ const createAccount = async function(){
     model.state.user.password = pass
 
     try{
-        
+        accountView.renderSpinner()
 
+        // creates user
+        const response = await model.createUser()
+        // creates account window
+        controlAccountWindow()
 
-        await model.createUser()
-        accountView.render()
-        accountView.scrollToElement()
-        toastView.notify(`Account succesfully created`)
-        
+        toastView.notify(response)
 
-        
+           
     }catch(err){
         toastView.notify(err)
-        console.error(`my error:  ${err}`)
+        loginView.render()
+
+  
     }
 }
 
@@ -117,31 +116,41 @@ const loginAccount = async function () {
         model.state.user.name = user;
         model.state.user.password = pass;
 
-    
     try {
+        accountView.renderSpinner()
 
         const response = await model.loginUser()
-        if (response.status === 'failed') throw new Error(response.data)
+        
+        toastView.notify(response);
 
-        toastView.notify(response)
-
-        toastView.notify('You have successfully logged in');
-        accountView.render();
-        accountView.scrollToElement();
-
+        controlAccountWindow()
         // Render sessions from the database
         model.state.poo.times.forEach(() => headerView.renderPoo());
-
+        console.log(model.state.poo.times)
     } catch (err) {
+        console.log(err)
         toastView.notify(err);
-        console.error(`Error in loginAccount: ${err.message || err}`);
+        loginView.render()
+
     }
 };
 // ENTERING ACCOUNT
 
+// ADVICES
+const createAdvice = async function(){
+    try{
+        accountView.advice =  await model.getAdvice()
+    }catch(err){
+        toastView.notify('advice will change soon')
+    }
+    
+}
+createAdvice()
 const controlAccountWindow = function(){
+    accountView.username = model.state.user.name
     accountView.render();
-    accountView.scrollToElement();
+
+
 }
 
 
@@ -197,6 +206,23 @@ const controlDeleteAccount = async function(){
 
 }
 
+// GRAPHS
+
+const controlGraph = function(){
+    toastView.notify('Coming soon....')
+}
+
+// ICONS
+const controlIcon = function(){
+    mainView.changePooIcon(accountView.currentIcon)
+    headerView.changePooIcon(accountView.currentIcon)
+}
+
+// EDIT USER
+const controlEditUser = function(){
+    toastView.notify('Coming soon....')
+}
+
 
 
 
@@ -208,9 +234,12 @@ const init = function(){
     loginView.addCancelHandler(controlEntryWindow)
     loginView.addEventHandler(controlLogin)
     loginView.addLoginHandler(controlEntryAccount)
-    loginView.addSignInHandler(controlSignIn)
+    loginView.addSignUpHandler(controlSignUp)
     deleteAccountView.addDeleteAccountWindowHandler(controlDeleteAccountWindow)
     accountView.addLogoutHandler(controlLogOut)
+    accountView.addGraphHandler(controlGraph)
+    accountView.addIconHandler(controlIcon)
+    accountView.addEditHandler(controlEditUser)
     deleteAccountView.addDeleteAccountHandler(controlDeleteAccount)
     deleteAccountView.addCancelDeleteHandler(controlAccountWindow)
 

@@ -1,26 +1,27 @@
-import {TIMEOUT_SEC, API_URL} from './config.js'
+import {TIMEOUT_SEC, API_URL, API_ADVICE} from './config.js'
 import {timeout} from './helper.js'
 
 // USER
 
 // create user , poo list and todays session
 const createUser = async (userInfo) => {
+
   try{
-  const fetchPro = fetch(`${API_URL}/users/new`, {
+  const fetchPro = await fetch(`${API_URL}/users/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userInfo)
   });
   const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
   const data= await response.json();
-  console.log(data)
-  console.log(response)
-  if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-  if(data.status ==='failed') throw {message: data.data}
+  if (!response.ok)throw {error: data.error}
+
   return data.data
     }
     catch(err){
-    throw(err)
+
+    throw(err.error)
+
     }
 };
 
@@ -36,14 +37,14 @@ const loginUser = async (userInfo) =>{
   
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
-    console.log(response)
-    if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-    if(data.status ==='failed') throw {message: data.data}
+
+    if (!response.ok)throw {error: data.error}
     return data.data
 
 
   }catch(err){
-    throw (err)
+    console.log(err.error)
+    throw (err.error)
   }
   };
 
@@ -59,16 +60,14 @@ const loginUser = async (userInfo) =>{
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
     console.log(response)
-    if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-    if(data.status ==='failed') throw {message: data.data}
-    return data.data
+    console.log(data)
+    if (!response.ok)throw {error: data.error}
+
+    return data.data.message
 
   }catch(err){
-    throw err
+    throw err.error
   }
-
-
-
   };
 
   // logingout 
@@ -84,12 +83,11 @@ const loginUser = async (userInfo) =>{
         const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
         const data= await response.json();
     
-      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
-      if(data.status ==='failed') throw {message: data.data}
+      if (!response.ok)throw {error: data.error}
       return data.data
 
       }catch(err){
-        throw (err)
+        throw err.error
       }
   }
 
@@ -105,15 +103,40 @@ const loginUser = async (userInfo) =>{
       });
       const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
       const data= await response.json();
-      if (!response.ok)throw new Error(`${data.message} ${response.status}`)
+      if (!response.ok)throw {error: data.error}
         return data.data
         }
         catch(err){
-        throw(err)
+        throw err.error
         }
 
   }
+  
 
+
+  // ADVICE
+
+// get advice 
+const getAdvice = async function(){
+  try{
+    const fetchPro = fetch(API_ADVICE, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json',
+        mode: 'no-cors' 
+       }
+    })
+    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+
+    const data = await response.json()
+
+    if (!response.ok)throw {error: 'something went wrong'}
+    console.log(data)
+    return data.slip.advice
+  }catch(err){
+    throw err.error
+  }
+  
+}
 
 
 
@@ -123,7 +146,8 @@ module.exports = {
     loginUser,
     deleteUser,
     updateSession,
-    logout
+    logout,
+    getAdvice
 
 
 }
