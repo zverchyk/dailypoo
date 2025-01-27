@@ -1,7 +1,6 @@
 import * as model from "./model";
 
 
-
 import mainView from "./view/mainView";
 import headerView from "./view/headerView";
 import loginView from "./view/loginView";
@@ -25,7 +24,8 @@ const controlClock = function(){
 const controlPooButton = async function(){
     if(!model.state.user.id) {
         toastView.notify("log in or sing in to poo)")
-        accountView.scrollToBottom()
+        loginView.scrollToBottom()
+        createAdvice()
         return
      }
         const now = new Date();
@@ -80,18 +80,23 @@ const controlEntryAccount = async function(){
 // subfunctions 
 const createAccount = async function(){
     const [ user, pass]  = loginView.getUserPass()
-    if (!user || !pass) {
-        toastView.notify('Please enter your email and password');
-        return
-    }
-    model.state.user.name = user
-    model.state.user.password = pass
-
+ 
     try{
+    //     if (!user || !pass) {
+    //         throw 'Please enter your email and password'
+          
+    //     }
+    //    if ( !model.validateEmail(user)){
+    //         throw 'Please enter a valid email'
+    //    }
+       
+        model.state.user.name = user;
+        model.state.user.password = pass;
         accountView.renderSpinner()
 
         // creates user
         const response = await model.createUser()
+        console.log(response)
         // creates account window
         controlAccountWindow()
 
@@ -109,18 +114,22 @@ const createAccount = async function(){
 const loginAccount = async function () {
     
         const [user, pass] = loginView.getUserPass();
-        if (!user || !pass) {
-            toastView.notify('Please enter your email and password');
-            return 
-        }
-        model.state.user.name = user;
-        model.state.user.password = pass;
 
     try {
+        if (!user || !pass) {
+            throw 'Please enter your email and password'
+          
+        }
+       if ( !model.validateEmail(user)){
+            throw 'Please enter a valid email'
+       }
+    
+        model.state.user.name = user;
+        model.state.user.password = pass;
         accountView.renderSpinner()
-
+      
         const response = await model.loginUser()
-        
+        console.log('helo')
         toastView.notify(response);
 
         controlAccountWindow()
@@ -140,12 +149,14 @@ const loginAccount = async function () {
 const createAdvice = async function(){
     try{
         accountView.advice =  await model.getAdvice()
+        
+        
     }catch(err){
         toastView.notify('advice will change soon')
     }
     
 }
-createAdvice()
+
 const controlAccountWindow = function(){
     accountView.username = model.state.user.name
     accountView.render();

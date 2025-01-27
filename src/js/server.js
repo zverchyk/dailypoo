@@ -1,6 +1,8 @@
 import {TIMEOUT_SEC, API_URL, API_ADVICE} from './config.js'
 import {timeout} from './helper.js'
 
+// const fetchy= require('node-fetch')
+
 // USER
 
 // create user , poo list and todays session
@@ -14,13 +16,14 @@ const createUser = async (userInfo) => {
   });
   const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
   const data= await response.json();
-  if (!response.ok)throw {error: data.error}
+
+  if (!response.ok)throw  data.error
 
   return data.data
     }
     catch(err){
-
-    throw(err.error)
+      console.log(err)
+    throw(err)
 
     }
 };
@@ -29,6 +32,7 @@ const createUser = async (userInfo) => {
 // logins user and gets/creates session 
 const loginUser = async (userInfo) =>{
   try{
+   
   const params = new URLSearchParams(userInfo)
     const fetchPro = await fetch(`${API_URL}/users/?${params.toString()}`, {
       method: 'GET',
@@ -38,13 +42,13 @@ const loginUser = async (userInfo) =>{
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
 
-    if (!response.ok)throw {error: data.error}
+    if (!response.ok)throw  data.error
     return data.data
 
 
   }catch(err){
-    console.log(err.error)
-    throw (err.error)
+    console.log(err)
+    throw (err)
   }
   };
 
@@ -61,12 +65,12 @@ const loginUser = async (userInfo) =>{
     const data= await response.json();
     console.log(response)
     console.log(data)
-    if (!response.ok)throw {error: data.error}
+    if (!response.ok)throw data.error
 
     return data.data.message
 
   }catch(err){
-    throw err.error
+    throw err
   }
   };
 
@@ -103,11 +107,11 @@ const loginUser = async (userInfo) =>{
       });
       const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
       const data= await response.json();
-      if (!response.ok)throw {error: data.error}
+      if (!response.ok)throw  data.error
         return data.data
         }
         catch(err){
-        throw err.error
+        throw err
         }
 
   }
@@ -121,19 +125,20 @@ const getAdvice = async function(){
   try{
     const fetchPro = fetch(API_ADVICE, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json',
-        mode: 'no-cors' 
-       }
-    })
-    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+      headers: { 'Content-Type':'application/x-www-form-urlencoded'}
+   })
 
+    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+ 
     const data = await response.json()
 
-    if (!response.ok)throw {error: 'something went wrong'}
-    console.log(data)
+
+    if (!response.ok)throw 'something went wrong'
+
     return data.slip.advice
   }catch(err){
-    throw err.error
+
+    throw err
   }
   
 }

@@ -1,4 +1,5 @@
 import server from './server'
+import validator from 'validator'
 
 
 export const state = {
@@ -13,6 +14,10 @@ export const state = {
         times:[]
     }
 
+}
+
+export const validateEmail = function(email){
+    return validator.isEmail(email)? true: false
 }
 
 export const resetState = () => {

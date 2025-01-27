@@ -1,23 +1,26 @@
-import View from "./view"
 
-class toastView extends View{
+
+class toastView {
     _parentElement = document.querySelector('#toast-container')
     message = ''
 
-    notify(message){
-        this.message = message
-        const markup = this._generateMarkUp()
-        this._parentElement.insertAdjacentHTML('beforeend', markup)
-            // Remove the toast after 5 seconds
+    notify(message) {
+        this.message = message;
+        const toastElement = document.createElement('div');
+        toastElement.classList.add('toast');
+        toastElement.textContent = this.message;
+    
+        // Append the toast to the container
+        this._parentElement.appendChild(toastElement);
+    
+        // Remove the specific toast after 5 seconds
         setTimeout(() => {
-           this._clear()
+          toastElement.remove();
         }, 5000);
-    }
+      }
 
 
-    _generateMarkUp(){
-        return `    <div class="toast">${this.message}</div>`
-    }
+
 }
 
 export default new toastView()

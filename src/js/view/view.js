@@ -12,6 +12,12 @@ export default class View {
     _clear(){
         this._parentElement.innerHTML = ''
     }
+    scrollToBottom(){
+        window.scrollTo({
+            top: document.body.scrollHeight, // Scroll to the bottom of the document
+            behavior: 'smooth' // Optional: Enables smooth scrolling
+        }); 
+    }
 
     renderSpinner(){
         this._clear()

@@ -27,6 +27,7 @@
     "util": "^0.12.5"
   },
   "dependencies": {
-    "sass": "^1.83.4"
+    "sass": "^1.83.4",
+    "validator": "^13.12.0"
   }
 }
