@@ -13,6 +13,7 @@ $logout-color: #ccc;
 @use 'toast' as t;
 @use 'buttons' as b;
 @use 'userBlock' as u;
+@use 'quote' as q;
 
 .user-block {
   @include u.user-block;
@@ -36,6 +37,9 @@ $logout-color: #ccc;
 }
 .cancel-button{
   @include b.cancel-button;
+}
+.advice-block{
+  @include q.advice-block;
 }
 
 // Example of custom styling using variables

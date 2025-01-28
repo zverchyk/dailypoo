@@ -1,7 +1,6 @@
 import {TIMEOUT_SEC, API_URL, API_ADVICE} from './config.js'
 import {timeout} from './helper.js'
 
-// const fetchy= require('node-fetch')
 
 // USER
 
@@ -123,7 +122,7 @@ const loginUser = async (userInfo) =>{
 // get advice 
 const getAdvice = async function(){
   try{
-    const fetchPro = fetch(API_ADVICE, {
+    const fetchPro = await fetch(API_ADVICE, {
       method: 'GET',
       headers: { 'Content-Type':'application/x-www-form-urlencoded'}
    })

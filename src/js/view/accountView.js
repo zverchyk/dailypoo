@@ -18,7 +18,6 @@ class accountView extends View{
     addEditHandler(handler){
         this._parentElement.addEventListener('click', (event) => {
             if (event.target && event.target.id==='user-edit') {
-                console.log('heoolo')
                 handler()
             }
           });
@@ -68,7 +67,7 @@ class accountView extends View{
                 <button class="footer__account__logout" id="log-out">Log out</button>
             </div>
                     <div class="advice-block">
-                <p>Advice: <span id="advice">${this.advice? this.advice: 'Eat more fiber'}</span></p>
+                 <blockquote>Advice: ${this.advice? this.advice: 'Eat more fiber'}<blockquote>
             </div>
         `
     }

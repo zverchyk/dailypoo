@@ -25,7 +25,6 @@ const controlPooButton = async function(){
     if(!model.state.user.id) {
         toastView.notify("log in or sing in to poo)")
         loginView.scrollToBottom()
-        createAdvice()
         return
      }
         const now = new Date();
@@ -82,13 +81,13 @@ const createAccount = async function(){
     const [ user, pass]  = loginView.getUserPass()
  
     try{
-    //     if (!user || !pass) {
-    //         throw 'Please enter your email and password'
+        if (!user || !pass) {
+            throw 'Please enter your email and password'
           
-    //     }
-    //    if ( !model.validateEmail(user)){
-    //         throw 'Please enter a valid email'
-    //    }
+        }
+       if ( !model.validateEmail(user)){
+            throw 'Please enter a valid email'
+       }
        
         model.state.user.name = user;
         model.state.user.password = pass;
@@ -96,7 +95,6 @@ const createAccount = async function(){
 
         // creates user
         const response = await model.createUser()
-        console.log(response)
         // creates account window
         controlAccountWindow()
 
@@ -116,13 +114,13 @@ const loginAccount = async function () {
         const [user, pass] = loginView.getUserPass();
 
     try {
-        if (!user || !pass) {
-            throw 'Please enter your email and password'
+    //     if (!user || !pass) {
+    //         throw 'Please enter your email and password'
           
-        }
-       if ( !model.validateEmail(user)){
-            throw 'Please enter a valid email'
-       }
+    //     }
+    //    if ( !model.validateEmail(user)){
+    //         throw 'Please enter a valid email'
+    //    }
     
         model.state.user.name = user;
         model.state.user.password = pass;
@@ -241,6 +239,7 @@ const controlEditUser = function(){
 const init = function(){
     model.createToday()
     controlClock()
+    createAdvice()
     mainView.addHandlerRender(controlPooButton)
     loginView.addCancelHandler(controlEntryWindow)
     loginView.addEventHandler(controlLogin)
