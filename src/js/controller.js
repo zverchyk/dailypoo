@@ -22,6 +22,7 @@ const controlClock = function(){
 //     }
 
 const controlPooButton = async function(){
+        createAdvice()
     if(!model.state.user.id) {
         toastView.notify("log in or sing in to poo)")
         loginView.scrollToBottom()
@@ -30,6 +31,7 @@ const controlPooButton = async function(){
         const now = new Date();
 
     try{
+
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
         model.state.poo.times.push(time)
@@ -114,13 +116,13 @@ const loginAccount = async function () {
         const [user, pass] = loginView.getUserPass();
 
     try {
-    //     if (!user || !pass) {
-    //         throw 'Please enter your email and password'
+        if (!user || !pass) {
+            throw 'Please enter your email and password'
           
-    //     }
-    //    if ( !model.validateEmail(user)){
-    //         throw 'Please enter a valid email'
-    //    }
+        }
+       if ( !model.validateEmail(user)){
+            throw 'Please enter a valid email'
+       }
     
         model.state.user.name = user;
         model.state.user.password = pass;
@@ -146,11 +148,13 @@ const loginAccount = async function () {
 // ADVICES
 const createAdvice = async function(){
     try{
+        
         accountView.advice =  await model.getAdvice()
+        accountView.changeAdvice()
         
         
     }catch(err){
-        toastView.notify('advice will change soon')
+        toastView.notify('a good advice did not come to you today')
     }
     
 }
@@ -239,7 +243,6 @@ const controlEditUser = function(){
 const init = function(){
     model.createToday()
     controlClock()
-    createAdvice()
     mainView.addHandlerRender(controlPooButton)
     loginView.addCancelHandler(controlEntryWindow)
     loginView.addEventHandler(controlLogin)

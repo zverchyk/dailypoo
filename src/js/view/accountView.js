@@ -35,6 +35,11 @@ class accountView extends View{
             }
           })
     }
+
+    
+    changeAdvice(){
+        this._parentElement.querySelector('blockquote').textContent = this.advice
+    }
     
 
     addLogoutHandler(handler){
@@ -67,7 +72,7 @@ class accountView extends View{
                 <button class="footer__account__logout" id="log-out">Log out</button>
             </div>
                     <div class="advice-block">
-                 <blockquote>Advice: ${this.advice? this.advice: 'Eat more fiber'}<blockquote>
+                 <blockquote> ${this.advice? this.advice: 'Eat more fiber'}</blockquote>
             </div>
         `
     }

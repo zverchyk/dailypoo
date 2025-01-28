@@ -1,38 +1,38 @@
 @import url('https://fonts.googleapis.com/css?family=Special+Elite');
 @mixin advice-block{
 	font-family: 'Special Elite', cursive;
-	background: #fffdf5;
 	color: #3f3f5a;
 	display: flex;
-	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 
     blockquote {
-        font-weight: 100;
-        font-size: 2rem;
-        max-width: 600px;
-        line-height: 1.4;
+        display: inline-flex;
+        font-weight: 40;
+        font-size: 1rem;
+        line-height: 1.2;
         position: relative;
         margin: 0;
         padding: .5rem;
+        justify-content: center;
+        align-items: center;
         &::before,
         &::after {
             position: absolute;
             color: #f1efe6;
-            font-size: 8rem;
-            width: 4rem;
-            height: 4rem;
+            font-size: 4rem;
+            width: 3rem;
+            height: 3rem;
         }
         &::before {
             content: '“';
-            left: -5rem;
-            top: -2rem;
+            left: -2rem;
+            top: -1rem;
         }   
         &::after {
             content: '”';
-            right: -5rem;
-            bottom: 1rem;
+            right: -3rem;
+            bottom: -1rem;
         }
     }
 }
