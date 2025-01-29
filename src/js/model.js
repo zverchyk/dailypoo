@@ -1,11 +1,12 @@
 import server from './server'
 import validator from 'validator'
 import {createBubbleChart} from './graph'
-import { timeout } from './helper'
+
 
 
 export const state = {
     mode: undefined,
+    sessionUpdated:true,
     user:{
         name: '',
         password: '',
@@ -97,7 +98,9 @@ export const logout = async function(){
 export const updateSession = async function(){
     try{
         const response = await server.updateSession({userId: state.user.id, day: state.poo.day, times: state.poo.times})
+        state.sessionUpdated =true
         return response 
+        
     }catch(err){
         throw err
     }
@@ -107,7 +110,7 @@ export const updateSession = async function(){
 export const createGraph = async function(){
     try{
         const rawData = await server.getSessions(state.user.id)
-           
+        if (rawData[0].times.length === 0) throw ('no data to create a chart')
         const config = createBubbleChart(rawData)
 
         return config
@@ -129,8 +132,9 @@ export const downloadChart= function() {
 }
 
 
-export const sendChart = async function(email){
+export const sendChart = async function(){
     try{
+        const email = state.user.name
         const canvas = document.getElementById('bubbleChartCanvas');
         const imageData = canvas.toDataURL('image/png'); // Convert to Base64
         const response = await server.sendChart(email, imageData)

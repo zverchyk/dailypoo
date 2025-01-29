@@ -1,6 +1,13 @@
-@import url('https://fonts.googleapis.com/css?family=Special+Elite');
+
+@font-face {
+    font-family: 'SpecialElite';
+    src: url('../fonts/Special_Elite/SpecialElite-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 @mixin advice-block{
-	font-family: 'Special Elite', cursive;
+	font-family: 'SpecialElite', cursive;
 	color: #3f3f5a;
 	display: flex;
 	align-items: center;

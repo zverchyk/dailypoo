@@ -166,18 +166,19 @@ const sendChart = async function(email, imageData){
   try{
     const fetchPro = await fetch(`${API_URL}/email/chart`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": 'application/json' },
       body: JSON.stringify({
         "email": email,
-        "image": imageData
+        "imageData": `${imageData}`
       })
     });
 
+
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
-    if (!response.ok)throw  data.error
+    if (!response.ok)throw  data.data.error
+    console.log(response)
     return data.data.message
-     
   }catch(err){
     throw err
   }

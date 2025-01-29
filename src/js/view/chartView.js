@@ -4,11 +4,42 @@ import Chart from 'chart.js/auto';
 class chartView extends view{
     _parentElement = document.querySelector('.wrapper')
 
+    updateChart(config){
+        if(this._parentElement.className !== 'wrapper'){
+            this._parentElement.remove()
+            this._parentElement = document.querySelector('.wrapper')
+        }
+        this.renderChart(config)
+    }
+
+    closeChart(){
+        this._parentElement.style.display = 'none'
+        document.querySelector('.overlay').style.display = 'none'
+    }
+
+    openChart(){
+        document.querySelector('.overlay').style.display = 'block'
+        this._parentElement.style.display = 'block'
+    }
+    renderChart(config){
+       
+        this._parentElement.insertAdjacentHTML('afterbegin', this._generateMarkUp())
+        this._parentElement = document.querySelector('.modal')
+            // Render the chart with a smaller canvas
+        const canvas = document.getElementById('bubbleChartCanvas');
+        canvas.width = 200;  // 3x smaller
+        canvas.height = 200; // 3x smaller
+
+        const ctx = canvas.getContext('2d');
+        new Chart(ctx, config);
+
+        console.log('render')
+
+    }
+
     addCloseChartHandler(handler){
         this._parentElement.addEventListener('click', (event) => {
             if (event.target && event.target.id==='close-graph') {
-                this._parentElement.style.display = 'none'
-                document.querySelector('.overlay').style.display = 'none'
                 console.log('close')
                 handler()
             }
@@ -30,29 +61,7 @@ class chartView extends view{
           });
     }
 
-    renderChart(config){
-        document.querySelector('.overlay').style.display = 'block'
-        // renames the parent element after the modal is created 
 
-        if(this._parentElement.classList.contains('wrapper')){
-        this._parentElement.insertAdjacentHTML('afterbegin', this._generateMarkUp())
-        this._parentElement = document.querySelector('.modal')
-            // Render the chart with a smaller canvas
-        const canvas = document.getElementById('bubbleChartCanvas');
-        canvas.width = 200;  // 3x smaller
-        canvas.height = 200; // 3x smaller
-
-        const ctx = canvas.getContext('2d');
-        new Chart(ctx, config);
-
-        return 
-        }
-
-
-        this._parentElement.style.display = 'block'
-        console.log('render')
-
-    }
 
 
     _generateMarkUp(){

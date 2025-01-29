@@ -69,6 +69,8 @@ $logout-color: #ccc;
   @include q.advice-block;
 }
 
+
+
 // Example of custom styling using variables
 .custom-toast {
   background-color: t.$bg-color;
@@ -111,8 +113,32 @@ html, body {
       justify-content: center;
      
       span {
+        position: relative;
         font-size: 2rem;
-      }
+        cursor: pointer; /* Default content */
+    
+        &::after {
+            content: attr(data-hover); /* Uses CSS variable */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s;
+        }
+    
+        &:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    
     }
   }
 

@@ -1,60 +1,49 @@
-
-
 export const createBubbleChart = function(rawData) {
-    // Extract the month from the first data entry (3rd and 4th characters in "day")
     let month = parseInt(rawData[0].day.substring(2, 4), 10);
     let year = parseInt(rawData[0].day.substring(4, 8), 10);
 
-    // Get unique days from the data
     let allDays = rawData.map(entry => parseInt(entry.day.substring(0, 2), 10));
-
-    // Ensure a minimum of 7 days in the dataset
+    let startDay = Math.min(...allDays);
     const minDays = 7;
     let uniqueDays = [];
-    let startDay = Math.min(...allDays);
-    for (let i = 0; i < Math.max(allDays.length, minDays); i++) {
-        let day = startDay + i;
+    let daysInMonth = new Date(year, month, 0).getDate();
+    let overflowDays = 0;
+    console.log(allDays)
 
-        // Handle month transition (if day exceeds the max days in current month)
-        let daysInMonth = new Date(year, month, 0).getDate(); // Get max days in the month
-        if (day > daysInMonth) {
-            day -= daysInMonth; // Start from 1 in the next month
-            month += 1;
-            if (month > 12) {
-                month = 1; // Wrap around to January if December overflows
-                year += 1;
-            }
-        }
-        uniqueDays.push(day);
+    // Generate at least 7 days in the x-axis, extending into the next month if necessary
+    for (let i = 0; i < minDays; i++) {
+        let newDay = startDay + i; //adds new day
+        uniqueDays.push(newDay);
     }
 
-    // Convert data into a format suitable for Chart.js
-    const datasets = rawData.map((entry) => {
-        let xValue = parseInt(entry.day.substring(0, 2), 10); // Day of the month
 
-        // Convert times to hours for the y-axis
+    // Create a mapping for visual labels: replace `32, 33` with `1, 2` visually
+    const labels = uniqueDays.map(day => (day > daysInMonth ? `${day - daysInMonth}` : `${day}`));
+
+    // Ensure dataset x-values match `uniqueDays`
+    const datasets = rawData.map((entry) => {
+        let rawDay = parseInt(entry.day.substring(0, 2), 10);
+        let xValue = uniqueDays.find(d => d % daysInMonth === rawDay % daysInMonth) || rawDay;
+
         const dataPoints = entry.times.map((time) => {
             const [hours, minutes, seconds] = time.split(':').map(Number);
-            const timeInHours = hours + minutes / 60 + seconds / 3600; // Convert time to hours
+            const timeInHours = hours + minutes / 60 + seconds / 3600;
             return {
-                x: xValue, // Day of the month (adjusted)
-                y: timeInHours, // Time in hours
-                r: 10, // Double the size of the bubble
+                x: xValue, // Maintain numeric x-values for correct spacing
+                y: timeInHours,
+                r: 10, // Bubble size
             };
         });
 
         return {
-            label: `Day ${xValue}`,
+            label: `Day ${rawDay}`,
             data: dataPoints,
-            backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-                Math.random() * 255
-            )}, ${Math.floor(Math.random() * 255)}, 0.5)`, // Random color
+            backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`,
             borderColor: 'rgba(0, 0, 0, 1)',
             borderWidth: 1,
         };
     });
 
-    // Chart.js configuration
     const config = {
         type: 'bubble',
         data: {
@@ -64,20 +53,26 @@ export const createBubbleChart = function(rawData) {
             plugins: {
                 title: {
                     display: true,
-                    text: `Bubble Chart: Time of Activity in ${month < 10 ? '0' + month : month}-${year}`,
+                    text: `Bubble Chart: Time of Activity `,// in ${month < 10 ? '0' + month : month}-${year}
                 },
             },
             scales: {
                 x: {
+                    type: 'linear',
                     title: {
                         display: true,
-                        text: `Day of the Month (${month < 10 ? '0' + month : month}-${year})`,
+                        text: 'Day of the Month',
                     },
                     ticks: {
-                        callback: (value) => `${value}`, // Display day of the month
+                        callback: function(value) {
+                            let index = uniqueDays.indexOf(value);
+                            return index !== -1 ? labels[index] : value; // Replace `32, 33` with `1, 2`
+                        },
+                        stepSize: 1,  // Ensures x-axis increments in whole numbers
+                        autoSkip: false, // Ensures all labels are shown
                     },
-                    min: Math.min(...uniqueDays), // Start from the first available day
-                    max: Math.max(...uniqueDays), // End at the last available or min 7 days later
+                    min: Math.min(...uniqueDays), // Minimum x-axis value
+                    max: Math.max(...uniqueDays), 
                 },
                 y: {
                     title: {
@@ -85,15 +80,14 @@ export const createBubbleChart = function(rawData) {
                         text: 'Time (24-Hour Range)',
                     },
                     min: 0,
-                    max: 24, // 24-hour range
+                    max: 24,
                     ticks: {
-                        callback: (value) => `${value}:00`, // Format as "hour:00"
+                        callback: (value) => `${value}:00`,
                     },
                 },
             },
         },
     };
-    return config
 
-
-}
+    return config;
+};

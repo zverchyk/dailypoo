@@ -67,7 +67,7 @@ class accountView extends View{
                 <button class="user-edit" id="user-edit">Edit</button>
             </div>
         <div class="footer__account">
-                <button class="footer__account__graph receive-graph" id="receive-graph" >Receive graph</button>
+                <button class="footer__account__graph receive-graph" id="receive-graph" >Open graph</button>
                 <button class="footer__account__delete delete-account" id="delete-account">Delete Account</button>
                 <button class="footer__account__logout" id="log-out">Log out</button>
             </div>

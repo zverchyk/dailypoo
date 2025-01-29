@@ -36,6 +36,7 @@ const controlPooButton = async function(){
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
         model.state.poo.times.push(time)
+        headerView.time = time
 
         const pooResposnse = await model.updateSession()
         headerView.renderPoo()
@@ -134,7 +135,9 @@ const loginAccount = async function () {
 
         controlAccountWindow()
         // Render sessions from the database
-        model.state.poo.times.forEach(() => headerView.renderPoo());
+        model.state.poo.times.forEach((time) =>{
+            headerView.time = time
+             headerView.renderPoo()});
     } catch (err) {
         console.log(err)
         toastView.notify(err);
@@ -192,6 +195,7 @@ const controlLogOut = async function(){
        loginView.render(loginView._generateLogInMarkUp())
        toastView.notify(response)
        headerView.clearPoo()
+       location.reload();
 
     }catch(err){
         console.error(err)
@@ -220,26 +224,35 @@ const controlDeleteAccount = async function(){
 }
 
 // GRAPHS
-
+// opens 
 const controlGraph = async function(){
     try{
+        if (!model.state.sessionUpdated) {
+            chartView.openChart()
+            
+            return 
+        } 
         toastView.notify('data is loading...')
         const config = await model.createGraph()
-        chartView.renderChart(config)
+        chartView.updateChart(config)
+        chartView.openChart()
         toastView.notify('data is loaded')
+        model.state.sessionUpdated= false
 
     }catch(err) {
         console.log(err)
-        toastView.notify('error is here')
+        toastView.notify(err)
     }
 
 }
 
 const controlSendingChart = async function(){
     try{
-        
-        toastView.notify('coming soon...')
+        const response = await model.sendChart()
+        console.log(response)
+        toastView.notify(response)
     }catch(err){
+        console.error(err)
         toastView.notify(err)
     }   
 }
@@ -251,6 +264,11 @@ const controlDownloadingChart =  function(){
     }catch(err){
         toastView.notify(err)
     }
+}
+
+const controlCloseChart = function(){
+    chartView.closeChart()
+
 }
 
 // ICONS
@@ -265,10 +283,37 @@ const controlEditUser = function(){
 }
 
 
+// delete one icon 
+const cotrolDeleteOneIcon = async function(){
+
+    try{
+    // delete one poo from the list 
+    const index = model.state.poo.times.indexOf(headerView.time);
+    if (index !== -1) {
+        model.state.poo.times.splice(index, 1);
+        }
+
+    toastView.notify('deleted')
+    // update the list
+    const pooResposnse = await model.updateSession()
+
+    toastView.notify(pooResposnse)
+    // delete the poo from the page
+    headerView.deleteOnePoo()
+
+    }catch(err){
+        toastView(err)
+    }
+
+    
+}
+
+
 
 
 
 const init = function(){
+
     model.createToday()
     controlClock()
     mainView.addHandlerRender(controlPooButton)
@@ -283,10 +328,10 @@ const init = function(){
     accountView.addEditHandler(controlEditUser)
     deleteAccountView.addDeleteAccountHandler(controlDeleteAccount)
     deleteAccountView.addCancelDeleteHandler(controlAccountWindow)
-    chartView.addCloseChartHandler()
+    chartView.addCloseChartHandler(controlCloseChart)
     chartView.addDownloadChartHandler(controlDownloadingChart)
     chartView.addSendChartHandler(controlSendingChart)
-
+    headerView.addDeleteOneHandler(cotrolDeleteOneIcon)
 
 }
 
