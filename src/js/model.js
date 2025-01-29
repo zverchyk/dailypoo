@@ -58,7 +58,7 @@ export const loginUser = async function(){
         const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
 
         state.user.id = response.userId
-        
+
         if (typeof(response.session) !== String()) {
             state.poo.times = response.session
             return response.message
@@ -107,8 +107,8 @@ export const updateSession = async function(){
 export const createGraph = async function(){
     try{
         const rawData = await server.getSessions(state.user.id)
-        
-        const config = createBubbleChart(response)
+           
+        const config = createBubbleChart(rawData)
 
         return config
     }catch(err){
