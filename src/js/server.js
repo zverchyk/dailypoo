@@ -123,7 +123,7 @@ const loginUser = async (userInfo) =>{
         headers: { 'Content-Type': 'application/json' },
       });
       const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
-      console.log(response)
+
       const data= await response.json();
       if (!response.ok)throw  data.error
       return data.data

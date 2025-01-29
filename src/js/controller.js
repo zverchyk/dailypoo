@@ -130,13 +130,11 @@ const loginAccount = async function () {
         accountView.renderSpinner()
       
         const response = await model.loginUser()
-       console.log(model.state.poo.times)
         toastView.notify(response);
 
         controlAccountWindow()
         // Render sessions from the database
         model.state.poo.times.forEach(() => headerView.renderPoo());
-        console.log(model.state.poo.times)
     } catch (err) {
         console.log(err)
         toastView.notify(err);
