@@ -1,5 +1,7 @@
 import server from './server'
 import validator from 'validator'
+import {createBubbleChart} from './graph'
+import { timeout } from './helper'
 
 
 export const state = {
@@ -56,6 +58,7 @@ export const loginUser = async function(){
         const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
 
         state.user.id = response.userId
+        
         if (typeof(response.session) !== String()) {
             state.poo.times = response.session
             return response.message
@@ -99,6 +102,43 @@ export const updateSession = async function(){
         throw err
     }
 }
+
+// create graph
+export const createGraph = async function(){
+    try{
+        const rawData = await server.getSessions(state.user.id)
+        
+        const config = createBubbleChart(response)
+
+        return config
+    }catch(err){
+        throw err
+    }
+}
+
+
+export const downloadChart= function() {
+    const canvas = document.getElementById("bubbleChartCanvas");
+    const imageURL = canvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = imageURL;
+    link.download = "month_poo_chart.png";
+    link.click();
+    return 'ready to download'
+}
+
+
+export const sendChart = async function(email){
+    try{
+        const canvas = document.getElementById('bubbleChartCanvas');
+        const imageData = canvas.toDataURL('image/png'); // Convert to Base64
+        const response = await server.sendChart(email, imageData)
+        return response
+    }catch(err){
+        throw err
+    }
+}
 // ADVICE 
 
 export const getAdvice = async function(){
@@ -123,5 +163,7 @@ export const createToday = function(){
             state.poo.day = date
             
 }
+
+
 
 

@@ -14,6 +14,33 @@ $logout-color: #ccc;
 @use 'buttons' as b;
 @use 'userBlock' as u;
 @use 'quote' as q;
+@use 'chartwindow' as c; 
+
+
+// -----------------------------
+
+.modal {
+  @include c.modal;
+} 
+
+.overlay {
+  @include c.overlay;
+}
+
+.close-chart-btn {
+  @include c.close-chart-btn;
+}
+
+
+.modal-footer {
+  @include c.modal-footer;
+}
+
+.btn{
+  @include c.btn
+}
+
+// -----------------------------
 
 .user-block {
   @include u.user-block;

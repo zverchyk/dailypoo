@@ -7,6 +7,7 @@ import loginView from "./view/loginView";
 import accountView from "./view/accountView";
 import deleteAccountView from "./view/deleteAccountView";
 import toastView from "./view/toastView";
+import chartView from "./view/chartView";
 
 
 
@@ -129,7 +130,7 @@ const loginAccount = async function () {
         accountView.renderSpinner()
       
         const response = await model.loginUser()
-        console.log('helo')
+       console.log(model.state.poo.times)
         toastView.notify(response);
 
         controlAccountWindow()
@@ -161,6 +162,7 @@ const createAdvice = async function(){
 
 const controlAccountWindow = function(){
     accountView.username = model.state.user.name
+
     accountView.render();
 
 
@@ -221,8 +223,36 @@ const controlDeleteAccount = async function(){
 
 // GRAPHS
 
-const controlGraph = function(){
-    toastView.notify('Coming soon....')
+const controlGraph = async function(){
+    try{
+        toastView.notify('data is loading...')
+        const config = await model.createGraph()
+        chartView.renderChart(config)
+        toastView.notify('data is loaded')
+
+    }catch(err) {
+        console.log(err)
+        toastView.notify('error is here')
+    }
+
+}
+
+const controlSendingChart = async function(){
+    try{
+        
+        toastView.notify('coming soon...')
+    }catch(err){
+        toastView.notify(err)
+    }   
+}
+
+const controlDownloadingChart =  function(){
+    try{
+        const response =  model.downloadChart()
+        toastView.notify(response)
+    }catch(err){
+        toastView.notify(err)
+    }
 }
 
 // ICONS
@@ -255,6 +285,9 @@ const init = function(){
     accountView.addEditHandler(controlEditUser)
     deleteAccountView.addDeleteAccountHandler(controlDeleteAccount)
     deleteAccountView.addCancelDeleteHandler(controlAccountWindow)
+    chartView.addCloseChartHandler()
+    chartView.addDownloadChartHandler(controlDownloadingChart)
+    chartView.addSendChartHandler(controlSendingChart)
 
 
 }

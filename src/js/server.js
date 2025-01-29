@@ -114,6 +114,25 @@ const loginUser = async (userInfo) =>{
         }
 
   }
+  // get all sessions 
+
+  const getSessions = async function(userId){
+    try{
+      const fetchPro = fetch(`${API_URL}/poo/all/${userId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+      console.log(response)
+      const data= await response.json();
+      if (!response.ok)throw  data.error
+      return data.data
+  
+  }catch(err){
+    console.log(err)
+    throw err
+  }}
+
   
 
 
@@ -142,6 +161,27 @@ const getAdvice = async function(){
   
 }
 
+const sendChart = async function(email, imageData){
+
+  try{
+    const fetchPro = await fetch(`${API_URL}/email/chart`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        "email": email,
+        "image": imageData
+      })
+    });
+
+    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+    const data= await response.json();
+    if (!response.ok)throw  data.error
+    return data.data.message
+     
+  }catch(err){
+    throw err
+  }
+}
 
 
 
@@ -151,7 +191,9 @@ module.exports = {
     deleteUser,
     updateSession,
     logout,
-    getAdvice
+    getAdvice,
+    getSessions,
+    sendChart 
 
 
 }
