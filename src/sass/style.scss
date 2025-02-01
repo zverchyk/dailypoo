@@ -15,9 +15,17 @@ $logout-color: #ccc;
 @use 'userBlock' as u;
 @use 'quote' as q;
 @use 'chartwindow' as c; 
+@use 'account' as a;
 
 
 // -----------------------------
+#emoji-button{
+  @include a.emoji-button;
+}
+
+#emoji-picker{
+  @include a.emoji-picker
+}
 
 .modal {
   @include c.modal;
@@ -69,6 +77,49 @@ $logout-color: #ccc;
   @include q.advice-block;
 }
 
+@keyframes parabolic-left {
+  0% {
+      transform: translate(0, 0) scale(0);
+      opacity: 0;
+  }
+  30% {
+      opacity: 1;
+  }
+  50% {
+      transform: translate(-150px, -160px) scale(1);
+  }
+  80% {
+      opacity: 1;
+  }
+  100% {
+      transform: translate(-250px, 40px) scale(0);
+      opacity: 0;
+  }
+}
+
+@keyframes parabolic-right {
+  0% {
+      transform: translate(0, 0) scale(0);
+      opacity: 0;
+  }
+  30% {
+      opacity: 1;
+  }
+  50% {
+      transform: translate(150px, -160px) scale(1);
+  }
+  80% {
+      opacity: 1;
+  }
+  100% {
+      transform: translate(250px, 40px) scale(0);
+      opacity: 0;
+  }
+}
+.particle{
+  @include a.particle
+}
+
 
 
 // Example of custom styling using variables
@@ -111,10 +162,10 @@ html, body {
       display: flex;
       gap: 10px;
       justify-content: center;
+      align-items: center;
      
       span {
         position: relative;
-        font-size: 2rem;
         cursor: pointer; /* Default content */
     
         &::after {
@@ -162,7 +213,6 @@ html, body {
 
 
       &__poo-button {
-        font-size: 2rem;
         width: 33.33%;
         height: 33.33%;
         background: $secondary-color;
@@ -174,7 +224,7 @@ html, body {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 250px;
+        font-size: 100px;
         span{
           transition: color 0.3s ease;
         }
@@ -456,4 +506,8 @@ html, body {
 /* Hide by default */
   opacity: 1;
 
+}
+
+.hidden {
+  display: none;
 }

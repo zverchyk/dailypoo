@@ -9,6 +9,11 @@ import deleteAccountView from "./view/deleteAccountView";
 import toastView from "./view/toastView";
 import chartView from "./view/chartView";
 
+import editAccountView from "./view/editAccountView";
+import userBlockView from "./view/userBlockView";
+
+
+
 
 
 const controlClock = function(){
@@ -24,19 +29,35 @@ const controlClock = function(){
 
 const controlPooButton = async function(){
         createAdvice()
+        console.log(mainView.currentSize)
     if(!model.state.user.id) {
         toastView.notify("log in or sing in to poo)")
-        loginView.scrollToBottom()
+        // loginView.scrollToBottom()
         return
      }
         const now = new Date();
 
     try{
-
+        
+        // SIZE ---------- POO
+  
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
+        let iconSize
+        if(mainView.currentSize <150){
+            iconSize = "1rem"
+        }
+        if(mainView.currentSize <250 && mainView.currentSize >=150){
+            iconSize = "2rem"
+        }
+        if(mainView.currentSize >=250){
+            iconSize = "3rem"
+        }
         model.state.poo.times.push(time)
+        model.state.poo.sizes.push(iconSize)
+
         headerView.time = time
+        headerView.size =iconSize
 
         const pooResposnse = await model.updateSession()
         headerView.renderPoo()
@@ -69,8 +90,8 @@ const controlSignUp = function(){
   
     }
     catch(err){
-        toastView.notify(`my error:  ${err}`)
-        console.error(`my error:  ${err}`)
+        toastView.notify(err)
+
     }
 }
 const controlEntryAccount = async function(){
@@ -132,14 +153,17 @@ const loginAccount = async function () {
       
         const response = await model.loginUser()
         toastView.notify(response);
-
+        userBlockView.currentIcon= model.state.user.icon
+        controlIcon()
         controlAccountWindow()
+        
         // Render sessions from the database
+        
         model.state.poo.times.forEach((time) =>{
             headerView.time = time
+            headerView.size = model.state.poo.sizes[model.state.poo.times.indexOf(time)]
              headerView.renderPoo()});
     } catch (err) {
-        console.log(err)
         toastView.notify(err);
         loginView.render()
 
@@ -161,14 +185,53 @@ const createAdvice = async function(){
     
 }
 
+// EDIT USER
+
+const controlEditAccountWindow =function(){
+
+    editAccountView.email = model.state.user.name
+    editAccountView.password = model.state.user.password
+    editAccountView.init()
+    editAccountView.render()
+    editAccountView.addCancelHandler(controlAccountWindow)
+    editAccountView.addSaveHandler(saveEditedUser)
+}
+
+const saveEditedUser = async function(){
+    // conect with server 
+
+    const [newEmail, newPassword]= editAccountView.getUserInput()
+    model.state.updatedUser.newEmail = newEmail
+    model.state.updatedUser.newPassword = newPassword
+    try{
+        const response = await model.updateUser()
+        toastView.notify(response)
+        controlAccountWindow()
+
+    }catch(err){
+        console.error(err)
+        toastView.notify(err)
+    }
+
+
+    
+}
+
 const controlAccountWindow = function(){
-    accountView.username = model.state.user.name
 
     accountView.render();
+    userBlockView.init()
+    console.log(model.state.user.name)
+    userBlockView.username = model.state.user.name
+    userBlockView.render()
+    userBlockView.addIconHandler(controlIcon)
+    userBlockView.addEditHandler(controlEditAccountWindow)
+
+// 
 
 
 }
-
+//  EDIT USER
 
 const controlEntryWindow =function(){
     try{
@@ -179,26 +242,23 @@ const controlEntryWindow =function(){
 }
 
 
-const controlDeleteAccountWindow =function(){
-    try{
-        deleteAccountView.render()
-    }catch(err){
-        console.error(err)
-    }
-}
-
 
 const controlLogOut = async function(){
     try{
+
+
+        await model.updateUser()
        const response =await model.logout()
        model.resetState()
        loginView.render(loginView._generateLogInMarkUp())
        toastView.notify(response)
        headerView.clearPoo()
+    
        location.reload();
 
     }catch(err){
         console.error(err)
+        toastView.notify(err)
     }
 }
 
@@ -222,7 +282,13 @@ const controlDeleteAccount = async function(){
     
 
 }
-
+const controlDeleteAccountWindow =function(){
+    try{
+        deleteAccountView.render()
+    }catch(err){
+        console.error(err)
+    }
+}
 // GRAPHS
 // opens 
 const controlGraph = async function(){
@@ -249,7 +315,6 @@ const controlGraph = async function(){
 const controlSendingChart = async function(){
     try{
         const response = await model.sendChart()
-        console.log(response)
         toastView.notify(response)
     }catch(err){
         console.error(err)
@@ -273,14 +338,14 @@ const controlCloseChart = function(){
 
 // ICONS
 const controlIcon = function(){
-    mainView.changePooIcon(accountView.currentIcon)
-    headerView.changePooIcon(accountView.currentIcon)
+    if(userBlockView.currentIcon!==""){
+        model.state.user.icon = userBlockView.currentIcon
+    }
+    mainView.changePooIcon(model.state.user.icon)
+    headerView.changePooIcon(model.state.user.icon)
 }
 
-// EDIT USER
-const controlEditUser = function(){
-    toastView.notify('Coming soon....')
-}
+
 
 
 // delete one icon 
@@ -302,7 +367,7 @@ const cotrolDeleteOneIcon = async function(){
     headerView.deleteOnePoo()
 
     }catch(err){
-        toastView(err)
+        toastView.notify(err)
     }
 
     
@@ -316,6 +381,8 @@ const init = function(){
 
     model.createToday()
     controlClock()
+    mainView.addStopGrowingPoo()
+    mainView.addGrowingHandler()
     mainView.addHandlerRender(controlPooButton)
     loginView.addCancelHandler(controlEntryWindow)
     loginView.addEventHandler(controlLogin)
@@ -324,14 +391,13 @@ const init = function(){
     deleteAccountView.addDeleteAccountWindowHandler(controlDeleteAccountWindow)
     accountView.addLogoutHandler(controlLogOut)
     accountView.addGraphHandler(controlGraph)
-    accountView.addIconHandler(controlIcon)
-    accountView.addEditHandler(controlEditUser)
     deleteAccountView.addDeleteAccountHandler(controlDeleteAccount)
     deleteAccountView.addCancelDeleteHandler(controlAccountWindow)
     chartView.addCloseChartHandler(controlCloseChart)
     chartView.addDownloadChartHandler(controlDownloadingChart)
     chartView.addSendChartHandler(controlSendingChart)
     headerView.addDeleteOneHandler(cotrolDeleteOneIcon)
+
 
 }
 

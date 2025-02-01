@@ -2,11 +2,13 @@ class headerView{
     _parentElement = document.querySelector('.header__poo-case')
     currentIcon = '💩'
     time = ""
+    size = ''
     renderPoo(){
         
         const markup= this._generateMarkUp()
         this._parentElement.insertAdjacentHTML('beforeend', markup)
         this.time=""
+        this.size = ''
     }
     clearPoo(){
        this._parentElement.innerHTML = ''
@@ -22,9 +24,7 @@ class headerView{
 
         this._parentElement.addEventListener('click', (event)=>{
                 if (event.target && event.target.tagName === `SPAN`) {
-                    console.log(event.target.id)
                     this.time= event.target.id
-                    // this.deleteOnePoo(event.target.id)
                     handler()
                 }})
        
@@ -35,7 +35,7 @@ class headerView{
         this._parentElement.querySelectorAll('span').forEach((el) => {el.textContent = this.currentIcon})
     }
     _generateMarkUp(){
-        return `<span id="${this.time}" data-hover="${this.time}">${this.currentIcon}</span>`
+        return `<span id="${this.time}" data-hover="${this.time}" style="font-size: ${this.size}; ">${this.currentIcon}</span>`
     }
 }
 

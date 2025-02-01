@@ -1,5 +1,8 @@
-import {TIMEOUT_SEC, API_URL, API_ADVICE} from './config.js'
+import {TIMEOUT_SEC} from './config.js'
 import {timeout} from './helper.js'
+
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
 
 // USER
@@ -8,7 +11,7 @@ import {timeout} from './helper.js'
 const createUser = async (userInfo) => {
 
   try{
-  const fetchPro = await fetch(`${API_URL}/users/new`, {
+  const fetchPro = await fetch(`${process.env.API_URL}/users/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userInfo)
@@ -21,19 +24,39 @@ const createUser = async (userInfo) => {
   return data.data
     }
     catch(err){
-      console.log(err)
     throw(err)
 
     }
 };
 
+// update user info
+const updateUser = async (userInfo) =>{
+  // return {...userInfo, message: 'all good'}
+  try{
+    const fetchPro = await fetch(`${process.env.API_URL}/users`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userInfo)
+    });
+    const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
+    const data= await response.json();
+  
+    if (!response.ok)throw  data.error
+  
+    return data.data
+      }
+      catch(err){
+      throw(err)
+  
+      }
+}
 
 // logins user and gets/creates session 
 const loginUser = async (userInfo) =>{
   try{
    
   const params = new URLSearchParams(userInfo)
-    const fetchPro = await fetch(`${API_URL}/users/?${params.toString()}`, {
+    const fetchPro = await fetch(`${process.env.API_URL}/users/?${params.toString()}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
@@ -46,7 +69,6 @@ const loginUser = async (userInfo) =>{
 
 
   }catch(err){
-    console.log(err)
     throw (err)
   }
   };
@@ -55,15 +77,13 @@ const loginUser = async (userInfo) =>{
   const deleteUser = async (userId) => {
     try{
   
-    const fetchPro = await fetch(`${API_URL}/users/${userId}`, {
+    const fetchPro = await fetch(`${process.env.API_URL}/users/${userId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     });
   
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
-    console.log(response)
-    console.log(data)
     if (!response.ok)throw data.error
 
     return data.data.message
@@ -78,7 +98,7 @@ const loginUser = async (userInfo) =>{
   const logout = async()=>{
     try{
 
-        const fetchPro = await fetch(`${API_URL}/users/logout`, {
+        const fetchPro = await fetch(`${process.env.API_URL}/users/logout`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -99,7 +119,7 @@ const loginUser = async (userInfo) =>{
 // update session 
   const updateSession= async function(pooInfo){
     try{
-      const fetchPro = fetch(`${API_URL}/poo/update`, {
+      const fetchPro = fetch(`${process.env.API_URL}/poo/update`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pooInfo)
@@ -118,7 +138,7 @@ const loginUser = async (userInfo) =>{
 
   const getSessions = async function(userId){
     try{
-      const fetchPro = fetch(`${API_URL}/poo/all/${userId}`, {
+      const fetchPro = fetch(`${process.env.API_URL}/poo/all/${userId}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -129,7 +149,6 @@ const loginUser = async (userInfo) =>{
       return data.data
   
   }catch(err){
-    console.log(err)
     throw err
   }}
 
@@ -141,7 +160,7 @@ const loginUser = async (userInfo) =>{
 // get advice 
 const getAdvice = async function(){
   try{
-    const fetchPro = await fetch(API_ADVICE, {
+    const fetchPro = await fetch(process.env.API_ADVICE, {
       method: 'GET',
       headers: { 'Content-Type':'application/x-www-form-urlencoded'}
    })
@@ -164,7 +183,7 @@ const getAdvice = async function(){
 const sendChart = async function(email, imageData){
 
   try{
-    const fetchPro = await fetch(`${API_URL}/email/chart`, {
+    const fetchPro = await fetch(`${process.env.API_URL}/email/chart`, {
       method: 'POST',
       headers: { "Content-Type": 'application/json' },
       body: JSON.stringify({
@@ -177,7 +196,6 @@ const sendChart = async function(email, imageData){
     const response = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)])
     const data= await response.json();
     if (!response.ok)throw  data.data.error
-    console.log(response)
     return data.data.message
   }catch(err){
     throw err
@@ -190,11 +208,13 @@ module.exports = {
     createUser,
     loginUser,
     deleteUser,
+    updateUser,
     updateSession,
     logout,
     getAdvice,
     getSessions,
-    sendChart 
+    sendChart
+
 
 
 }

@@ -7,8 +7,8 @@ export const createBubbleChart = function(rawData) {
     const minDays = 7;
     let uniqueDays = [];
     let daysInMonth = new Date(year, month, 0).getDate();
-    let overflowDays = 0;
-    console.log(allDays)
+
+
 
     // Generate at least 7 days in the x-axis, extending into the next month if necessary
     for (let i = 0; i < minDays; i++) {

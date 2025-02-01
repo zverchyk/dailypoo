@@ -1,46 +1,14 @@
 import View from "./view";
+import 'emoji-picker-element';
 
 class accountView extends View{
     _parentElement = document.querySelector('.footer__container')
-    username = ''
-    currentIcon = ''
     advice= ''
 
-    addGraphHandler(handler){
-        this._parentElement.addEventListener('click', (event) => {
-            if (event.target && event.target.id==='receive-graph') {
-                handler()
-            }
-          });
-    }
-
-    
-    addEditHandler(handler){
-        this._parentElement.addEventListener('click', (event) => {
-            if (event.target && event.target.id==='user-edit') {
-                handler()
-            }
-          });
-    }
-
-    addIconHandler(handler){
-        this._parentElement.addEventListener('click', (event) => {
-            if (event.target && event.target.classList.contains('icon1')) {
-                this.currentIcon = '💩'
-                handler()
-            }
-            if (event.target && event.target.classList.contains('icon2')) {
-                this.currentIcon = '🦄'
-                handler()
-            }
-          })
-    }
-
-    
     changeAdvice(){
         this._parentElement.querySelector('blockquote').textContent = this.advice
     }
-    
+ 
 
     addLogoutHandler(handler){
         document.body.addEventListener('click', (event) => {
@@ -50,21 +18,18 @@ class accountView extends View{
             }
           });
     }
-
-    
+    addGraphHandler(handler){
+        this._parentElement.addEventListener('click', (event) => {
+            if (event.target && event.target.id==='receive-graph') {
+                handler()
+            }
+          });
+    }
 
     _generateMarkUp(){
         return `
                 <div class="user-block">
-                <div class="user-block__info">
-                    <div class="user-icon"></div>
-                    <div class="user-name">${this.username}</div>
-                </div>
-                <div class="user-block__icon-choice">
-                    <button class="icon1">💩</button>
-                    <button class="icon2">🦄</button>
-                </div>
-                <button class="user-edit" id="user-edit">Edit</button>
+               
             </div>
         <div class="footer__account">
                 <button class="footer__account__graph receive-graph" id="receive-graph" >Open graph</button>
@@ -77,9 +42,7 @@ class accountView extends View{
         `
     }
 
-
-
-
+    
 }
 
 

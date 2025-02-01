@@ -33,15 +33,12 @@ class chartView extends view{
         const ctx = canvas.getContext('2d');
         new Chart(ctx, config);
 
-        console.log('render')
-
     }
 
     addCloseChartHandler(handler){
         this._parentElement.addEventListener('click', (event) => {
             if (event.target && event.target.id==='close-graph') {
-                console.log('close')
-                handler()
+                 handler()
             }
           });
     }

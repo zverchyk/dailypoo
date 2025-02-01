@@ -11,10 +11,18 @@ export const state = {
         name: '',
         password: '',
         id:'',
+        icon: '',
+        pic: ''
     },
     poo:{
         day:'',
-        times:[]
+        times:[],
+        sizes:[]
+    },
+    updatedUser:{
+        newEmail:'',
+        newPassword: '',
+        newPic: '',
     }
 
 }
@@ -51,20 +59,51 @@ export const createUser = async function(){
     
 }
 
+export const updateUser = async function(){
+    try{
+        const userInfo = {
+            userId: state.user.id,
+            newEmail: state.updatedUser.newEmail, 
+            newPassword:state.updatedUser.newPassword,
+            newIcon: state.user.icon
+        }
+        console.log(userInfo.newIcon)
+        const response = await server.updateUser(userInfo)
+
+        // if success update state.user.name and etc
+        state.user.name = state.updatedUser.newEmail ?? state.user.name
+        state.user.password = state.updatedUser.newPassword ?? state.user.password
+
+        // clear state.updatedUser.newEmail and etc
+        Object.keys(state.updatedUser).forEach(item=>{
+           state.updatedUser[item] = ''
+        })
+
+         return response.message
+    }catch(err){
+        throw err
+    }
+}
 // logins user and gets session
 
 export const loginUser = async function(){
 
     try {
         const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
-
+        console.dir(response)
         state.user.id = response.userId
+        state.user.icon = response.icon
+        console.log(state.user.icon)
+        
 
-        if (typeof(response.session) !== String()) {
-            state.poo.times = response.session
+        if (!response.session) {
+            state.poo.times = []
+            state.poo.sizes = []
             return response.message
         } 
-        return `${response.message} \n ${response.session}`
+        state.poo.times = response.session.times
+        state.poo.sizes = response.session.times
+        return response.message
         
     } catch (err) {
         throw err;
@@ -84,6 +123,7 @@ export const deleteUser = async function(){
 
 export const logout = async function(){
     try{
+
         const response = await server.logout()
         return response
     }catch(err){
@@ -97,7 +137,13 @@ export const logout = async function(){
 // updates session 
 export const updateSession = async function(){
     try{
-        const response = await server.updateSession({userId: state.user.id, day: state.poo.day, times: state.poo.times})
+        const sessionInfo = {
+            userId: state.user.id, 
+            day: state.poo.day,
+            times: state.poo.times,
+            sizes: state.poo.sizes
+        }
+        const response = await server.updateSession(sessionInfo)
         state.sessionUpdated =true
         return response 
         
@@ -110,6 +156,7 @@ export const updateSession = async function(){
 export const createGraph = async function(){
     try{
         const rawData = await server.getSessions(state.user.id)
+        console.log(rawData[0].times.length)
         if (rawData[0].times.length === 0) throw ('no data to create a chart')
         const config = createBubbleChart(rawData)
 
