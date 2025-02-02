@@ -8,9 +8,10 @@ import accountView from "./view/accountView";
 import deleteAccountView from "./view/deleteAccountView";
 import toastView from "./view/toastView";
 import chartView from "./view/chartView";
-
 import editAccountView from "./view/editAccountView";
 import userBlockView from "./view/userBlockView";
+
+import guideView from "./view/guideView";
 
 
 
@@ -29,18 +30,19 @@ const controlClock = function(){
 
 const controlPooButton = async function(){
         createAdvice()
-        console.log(mainView.currentSize)
     if(!model.state.user.id) {
         toastView.notify("log in or sing in to poo)")
-        // loginView.scrollToBottom()
+
+        setTimeout(()=>{loginView.scrollToBottom()}, 1000)
+     
         return
      }
         const now = new Date();
 
     try{
         
-        // SIZE ---------- POO
-  
+
+        if(model.state.poo.times.length>=10) throw 'temporary limit 10 records'
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
         let iconSize
@@ -114,7 +116,7 @@ const createAccount = async function(){
             throw 'Please enter a valid email'
        }
        
-        model.state.user.name = user;
+        model.state.user.email = user;
         model.state.user.password = pass;
         accountView.renderSpinner()
 
@@ -147,22 +149,27 @@ const loginAccount = async function () {
             throw 'Please enter a valid email'
        }
     
-        model.state.user.name = user;
+        model.state.user.email = user;
         model.state.user.password = pass;
         accountView.renderSpinner()
-      
+
+     
         const response = await model.loginUser()
         toastView.notify(response);
-        userBlockView.currentIcon= model.state.user.icon
+       
+        // changes icon button in user-block
+        userBlockView.currentIcon = model.state.user.icon
         controlIcon()
         controlAccountWindow()
-        
+
         // Render sessions from the database
-        
+    
         model.state.poo.times.forEach((time) =>{
             headerView.time = time
             headerView.size = model.state.poo.sizes[model.state.poo.times.indexOf(time)]
              headerView.renderPoo()});
+
+
     } catch (err) {
         toastView.notify(err);
         loginView.render()
@@ -189,7 +196,7 @@ const createAdvice = async function(){
 
 const controlEditAccountWindow =function(){
 
-    editAccountView.email = model.state.user.name
+    editAccountView.email = model.state.user.email
     editAccountView.password = model.state.user.password
     editAccountView.init()
     editAccountView.render()
@@ -221,8 +228,8 @@ const controlAccountWindow = function(){
 
     accountView.render();
     userBlockView.init()
-    console.log(model.state.user.name)
-    userBlockView.username = model.state.user.name
+
+    userBlockView.username = model.state.user.email
     userBlockView.render()
     userBlockView.addIconHandler(controlIcon)
     userBlockView.addEditHandler(controlEditAccountWindow)
@@ -245,14 +252,21 @@ const controlEntryWindow =function(){
 
 const controlLogOut = async function(){
     try{
-
-
+        accountView.renderSpinner()
+        // checks if the icon was changed during the session
+       if(model.state.user.icon !== model.state.updatedUser.newIcon && model.state.updatedUser.newIcon !==""){
         await model.updateUser()
-       const response =await model.logout()
+        toastView.notify('icon updated')
+       } 
+
+       accountView.renderSpinner()
        model.resetState()
        loginView.render(loginView._generateLogInMarkUp())
-       toastView.notify(response)
        headerView.clearPoo()
+       const response =await model.logout()
+ 
+       toastView.notify(response)
+
     
        location.reload();
 
@@ -338,11 +352,14 @@ const controlCloseChart = function(){
 
 // ICONS
 const controlIcon = function(){
-    if(userBlockView.currentIcon!==""){
-        model.state.user.icon = userBlockView.currentIcon
+    let icon = model.state.user.icon
+    // checks if icon was changed in userblock
+    if(userBlockView.currentIcon!== icon && userBlockView.currentIcon!==""){
+       icon = userBlockView.currentIcon
+       model.state.updatedUser.newIcon = icon
     }
-    mainView.changePooIcon(model.state.user.icon)
-    headerView.changePooIcon(model.state.user.icon)
+    mainView.changePooIcon(icon)
+    headerView.changePooIcon(icon)
 }
 
 
@@ -373,14 +390,65 @@ const cotrolDeleteOneIcon = async function(){
     
 }
 
+// activates welcome guide once if user do nothing for 4 sec
+const inactivityHandler = function() {
+    let inactivityTimer;
+    let hasRun = false;
+
+    function runOnce() {
+        if (!hasRun) {
+            console.log("User is inactive! Running the function...");
+            guideView.welcomeScenario(); // Your function
+            hasRun = true; // Prevents further execution
+
+            // Remove event listeners to prevent further detection
+            ["mousemove", "keypress", "scroll", "touchstart"].forEach(event => {
+                window.removeEventListener(event, resetTimer);
+            });
+        }
+    }
+
+    function resetTimer() {
+
+        if(model.state.mode) hasRun =true
+        // If already run, remove event listeners
+        if (hasRun) {
+            ["mousemove", "keypress", "scroll", "touchstart"].forEach(event => {
+
+                window.removeEventListener(event, resetTimer);})
+                return 
+        }
+
+        clearTimeout(inactivityTimer); // Clear existing timer
+        inactivityTimer = setTimeout(runOnce, 2000); // 2 seconds inactivity
+    }
+
+    // Attach event listeners for activity detection
+    ["mousemove", "keypress", "scroll", "touchstart"].forEach(event => {
+        window.addEventListener(event, resetTimer);
+    });
+
+    // Start the initial timer
+    resetTimer();
+};
 
 
+const controlGuideTour = function(){
+    try{if(model.state.user.email !== ""){
+        guideView.tourScenario()}
+        else{
+            throw "you need to log in first"
+        }}catch(err){
+            toastView.notify(err)
+        }
+}
 
 
 const init = function(){
 
     model.createToday()
     controlClock()
+    inactivityHandler()
     mainView.addStopGrowingPoo()
     mainView.addGrowingHandler()
     mainView.addHandlerRender(controlPooButton)
@@ -397,6 +465,8 @@ const init = function(){
     chartView.addDownloadChartHandler(controlDownloadingChart)
     chartView.addSendChartHandler(controlSendingChart)
     headerView.addDeleteOneHandler(cotrolDeleteOneIcon)
+
+    guideView.addGuideIconHandler(controlGuideTour)
 
 
 }

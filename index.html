@@ -8,13 +8,18 @@
     <title>Daily Poo</title>
 </head>
 <body>
+    <div class="running-banner">
+        <div class="banner-content">🚧 Website in Test Mode 🚧 Website in Test Mode 🚧 Website in Test Mode 🚧</div>
+    </div>
     <div class="wrapper">
-       <div class="overlay" id="overlay"></div>
+       <div class="overlay hidden" id="overlay"></div>
+       <div class="info-icon" id="guide-icon">i</div>
+        <div class="guide-field hidden"></div>
     <div id="toast-container"></div>
-
+    
     <div class="header">
         <div class="container">
-            <div class="header__poo-case">
+            <div class="header__poo-case" id="poo-case">
 
             </div>
         </div>
@@ -22,8 +27,8 @@
     <div class="main">
  
             <div class="main__container">
-                <button class="main__container__poo-button poo-button">
-                    <span>💩</span></button>
+                <button class="main__container__poo-button poo-button" id="poo-btn">
+                    <span >💩</span></button>
                 <div class="main__container__clock">
                     <span id="clock">00:00:00</span>
                 </div>

@@ -8,7 +8,7 @@ export const state = {
     mode: undefined,
     sessionUpdated:true,
     user:{
-        name: '',
+        email: '',
         password: '',
         id:'',
         icon: '',
@@ -23,6 +23,7 @@ export const state = {
         newEmail:'',
         newPassword: '',
         newPic: '',
+        newIcon:''
     }
 
 }
@@ -49,7 +50,7 @@ export const resetState = () => {
 export const createUser = async function(){
     try{
         
-        const response = await server.createUser({email: state.user.name, password: state.user.password, day: state.poo.day})
+        const response = await server.createUser({email: state.user.email, password: state.user.password, day: state.poo.day})
         state.user.id = response.userId
         return response.message
         
@@ -62,17 +63,35 @@ export const createUser = async function(){
 export const updateUser = async function(){
     try{
         const userInfo = {
-            userId: state.user.id,
-            newEmail: state.updatedUser.newEmail, 
-            newPassword:state.updatedUser.newPassword,
-            newIcon: state.user.icon
+            email: state.updatedUser.newEmail, 
+            password:state.updatedUser.newPassword,
+            icon: state.updatedUser.newIcon
         }
-        console.log(userInfo.newIcon)
-        const response = await server.updateUser(userInfo)
+        const removeKeys = (obj, keysToRemove) => Object.fromEntries(
+            Object.entries(obj).filter(([key]) => !keysToRemove.includes(key))
+        );
+        
+   
+        let keysToRemove = []
+ 
+        // filters for duplicates and empty values
+        Object.keys(userInfo).forEach(item=>{
+            if (userInfo[item] === "") keysToRemove.push(item)
 
-        // if success update state.user.name and etc
-        state.user.name = state.updatedUser.newEmail ?? state.user.name
-        state.user.password = state.updatedUser.newPassword ?? state.user.password
+            if (userInfo[item] === state.user[item]) keysToRemove.push(item)
+         })
+
+        const checkedUserInfo = removeKeys(userInfo, keysToRemove);
+
+
+        if (Object.keys(checkedUserInfo).length === 0) throw 'nothing to update'
+
+        const response = await server.updateUser({...checkedUserInfo, userId: state.user.id})
+
+        // if success update state.user.email and etc
+        Object.keys(checkedUserInfo).forEach(item=>{
+            state.user[item] = checkedUserInfo[item]
+        })
 
         // clear state.updatedUser.newEmail and etc
         Object.keys(state.updatedUser).forEach(item=>{
@@ -89,11 +108,10 @@ export const updateUser = async function(){
 export const loginUser = async function(){
 
     try {
-        const response = await server.loginUser({ email: state.user.name, password: state.user.password, day: state.poo.day});
-        console.dir(response)
+        const response = await server.loginUser({ email: state.user.email, password: state.user.password, day: state.poo.day});
         state.user.id = response.userId
         state.user.icon = response.icon
-        console.log(state.user.icon)
+   
         
 
         if (!response.session) {
@@ -181,7 +199,7 @@ export const downloadChart= function() {
 
 export const sendChart = async function(){
     try{
-        const email = state.user.name
+        const email = state.user.email
         const canvas = document.getElementById('bubbleChartCanvas');
         const imageData = canvas.toDataURL('image/png'); // Convert to Base64
         const response = await server.sendChart(email, imageData)

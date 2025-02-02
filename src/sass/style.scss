@@ -9,6 +9,7 @@ $graph-color:  #156030;
 $logout-color: #ccc;
 
 
+
 @use 'spinner' as s;
 @use 'toast' as t;
 @use 'buttons' as b;
@@ -16,6 +17,29 @@ $logout-color: #ccc;
 @use 'quote' as q;
 @use 'chartwindow' as c; 
 @use 'account' as a;
+@use 'infoIcon' as i;
+@use 'guide' as g;
+@use 'banner' as banner;
+
+.running-banner{ 
+  @include banner.running-banner
+}
+
+
+
+// info icon 
+.info-icon{
+  @include i.info-icon;
+}
+// --------------------------
+
+// guide elements 
+#tour-box{
+  @include g.tour-box
+}
+.guide-field{
+  @include g.guide-field
+}
 
 
 // -----------------------------
@@ -152,6 +176,7 @@ html, body {
   font-family: $font-family;
   display: flex;
   flex-direction: column;
+  position: relative;
 
 
   .header {
@@ -225,6 +250,7 @@ html, body {
         align-items: center;
         justify-content: center;
         font-size: 100px;
+        z-index: 3;
         span{
           transition: color 0.3s ease;
         }
@@ -263,7 +289,7 @@ html, body {
     margin: 0 auto; // Center within the footer
     width: 100%; // Full width of the parent
     max-width: $container-max-width; 
-    padding: 15px;
+    padding: 15px 0;
 
     > * {
       display: flex;

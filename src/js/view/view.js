@@ -1,13 +1,11 @@
 export default class View {
-    render(customMarkUp){
+    render(scroll = true,customMarkUp=null){
         
         const markup= customMarkUp? customMarkUp: this._generateMarkUp()
         this._clear()
         this._parentElement.insertAdjacentHTML('afterbegin', markup)
-        window.scrollTo({
-            top: document.body.scrollHeight, // Scroll to the bottom of the document
-            behavior: 'smooth' // Optional: Enables smooth scrolling
-        });
+        scroll ? this.scrollToBottom: null
+
     }
     _clear(){
 
