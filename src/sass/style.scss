@@ -21,6 +21,7 @@ $logout-color: #ccc;
 @use 'guide' as g;
 @use 'banner' as banner;
 
+
 .running-banner{ 
   @include banner.running-banner
 }
@@ -34,7 +35,7 @@ $logout-color: #ccc;
 // --------------------------
 
 // guide elements 
-#tour-box{
+.tour-box{
   @include g.tour-box
 }
 .guide-field{
@@ -238,32 +239,23 @@ html, body {
 
 
       &__poo-button {
-        width: 33.33%;
-        height: 33.33%;
-        background: $secondary-color;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
+         display: flex;
+        align-items:center;
         justify-content: center;
+        background: transparent;
+        height: 20%;
+        border: none; 
+        cursor: pointer;
         font-size: 100px;
-        z-index: 3;
-        span{
-          transition: color 0.3s ease;
-        }
+        opacity: .9;
         &:hover {
-          span{
-            background: darken($secondary-color, 10%);
-            text-shadow: #3498db;
-          }
-          
+            opacity: 1;
+
         }
       }
+      // make media for mobile version
       &__clock {
-        margin-top: 50px;
+        margin-top: 70px;
         font-size: 120px;
         color: $primary-color;
       }
@@ -536,4 +528,4 @@ html, body {
 
 .hidden {
   display: none;
-}
+};

@@ -447,8 +447,10 @@ const controlGuideTour = function(){
 const init = function(){
 
     model.createToday()
-    controlClock()
+    // controlClock()
     inactivityHandler()
+
+
     mainView.addStopGrowingPoo()
     mainView.addGrowingHandler()
     mainView.addHandlerRender(controlPooButton)
@@ -467,6 +469,25 @@ const init = function(){
     headerView.addDeleteOneHandler(cotrolDeleteOneIcon)
 
     guideView.addGuideIconHandler(controlGuideTour)
+     // Attach handlers once to the document instead of multiple elements
+    //  document.body.addEventListener("click", (event) => {
+    //     if (event.target.matches(".poo-grow")) mainView.addGrowingHandler();
+    //     if (event.target.matches(".poo-stop")) mainView.addStopGrowingPoo();
+    //     if (event.target.matches(".poo-button")) controlPooButton();
+    //     if (event.target.matches(".cancel-button")) controlEntryWindow();
+    //     if (event.target.matches(".login-button")) controlLogin();
+    //     if (event.target.matches(".signup-button")) controlSignUp();
+    //     if (event.target.matches(".login-submit")) controlEntryAccount();
+    //     if (event.target.matches(".logout-button")) controlLogOut();
+    //     if (event.target.matches(".graph-button")) controlGraph();
+    //     if (event.target.matches(".delete-account")) controlDeleteAccount();
+    //     if (event.target.matches(".delete-cancel")) controlAccountWindow();
+    //     if (event.target.matches(".chart-close")) controlCloseChart();
+    //     if (event.target.matches(".chart-download")) controlDownloadingChart();
+    //     if (event.target.matches(".chart-send")) controlSendingChart();
+    //     if (event.target.matches(".delete-one-icon")) cotrolDeleteOneIcon();
+    //     if (event.target.matches(".guide-icon")) controlGuideTour();
+    // });
 
 
 }

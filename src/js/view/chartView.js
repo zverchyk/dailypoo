@@ -3,6 +3,7 @@ import Chart from 'chart.js/auto';
 
 class chartView extends view{
     _parentElement = document.querySelector('.wrapper')
+    _overlay = document.querySelector('.overlay')
 
     updateChart(config){
         if(this._parentElement.className !== 'wrapper'){
@@ -14,11 +15,11 @@ class chartView extends view{
 
     closeChart(){
         this._parentElement.style.display = 'none'
-        document.querySelector('.overlay').style.display = 'none'
+        this._overlay.classList.add('hidden')
     }
 
     openChart(){
-        document.querySelector('.overlay').style.display = 'block'
+        this._overlay.classList.remove('hidden')
         this._parentElement.style.display = 'block'
     }
     renderChart(config){
