@@ -178,14 +178,7 @@ class GuideView extends view{
         })
 
     }
-    disableScroll() {
-        document.body.style.overflow = "hidden";
-    }
-    
-    enableScroll() {
-        document.body.style.overflow = "auto"; // Restore scrolling
-    }
-    
+
 
     addGuideIconHandler(handler){
         this._iconInfoElement.addEventListener('click', handler)

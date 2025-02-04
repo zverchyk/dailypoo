@@ -1,4 +1,4 @@
-
+@use 'adaptive' as adapt;
 
 @mixin user-block {
     display: flex;
@@ -28,6 +28,9 @@
         flex-grow: 1; // Allow this to expand as needed
         font-size: 16px;
         color: #333;
+        @include adapt.respond-to('smartphone'){
+          font-size: 20px;
+        }
       }
     }
   
@@ -35,16 +38,17 @@
       display: flex;
       gap: 10px;
   
-      .icon1,
-      .icon2 {
-        width: 24px;
-        height: 24px;
-        background-color: #eee; // Placeholder color
-        border-radius: 4px; // Slight rounding for icons
+      .icon-choice {
+        font-size: 40px;
+  
         cursor: pointer;
+        border: none;
+        background-color: transparent;
+        opacity: .6;
+
   
         &:hover {
-          background-color: #ddd; // Slightly darker on hover
+          opacity:10;// Slightly darker on hover
         }
       }
     }
@@ -52,7 +56,7 @@
     .user-edit {
       align-self: flex-end; // Align button to the right
       padding: 5px 10px;
-      font-size: 14px;
+      font-size: 24px;
       border: none;
       border-radius: 4px;
       background-color: #007bff; // Primary button color

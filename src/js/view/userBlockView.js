@@ -53,7 +53,7 @@ class UserBlockView extends view {
                 <div class="user-name">${this.username}</div>
             </div>
             <div class="user-block__icon-choice">
-                <button id="emoji-button">${this.currentIcon}</button>
+                <button class="icon-choice" id="emoji-button">${this.currentIcon}</button>
                 <emoji-picker id="emoji-picker" class="hidden"></emoji-picker>
             </div>
             <button class="user-edit" id="user-edit">Edit</button>

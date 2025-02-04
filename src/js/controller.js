@@ -12,6 +12,7 @@ import editAccountView from "./view/editAccountView";
 import userBlockView from "./view/userBlockView";
 
 import guideView from "./view/guideView";
+import welcomeView from "./view/welcomeView";
 
 
 
@@ -72,23 +73,12 @@ const controlPooButton = async function(){
     }
 }
 
-// ENTERING ACCOUNT 
-const controlLogin = function(){
+// ENTERING to login or sign up
+
+const controlEntry = function(){
     try{
         loginView.render()
-
-        model.state.mode = 'log-in'
-    }
-    catch(err){
-        console.error(`my error:  ${err}`)
-    }
-}
-
-const controlSignUp = function(){
-    try{
-        loginView.render()
-
-        model.state.mode = 'sign-in'
+        model.state.mode = welcomeView.mode
   
     }
     catch(err){
@@ -98,7 +88,7 @@ const controlSignUp = function(){
 }
 const controlEntryAccount = async function(){
     model.createToday()
-    if (model.state.mode === 'sign-in') await createAccount()
+    if (model.state.mode === 'sign-up') await createAccount()
     if (model.state.mode === 'log-in') await loginAccount()
 
 }
@@ -115,7 +105,12 @@ const createAccount = async function(){
        if ( !model.validateEmail(user)){
             throw 'Please enter a valid email'
        }
-       
+       const passValidation = model.validatePassword(pass)
+
+       if (typeof passValidation === 'string'){
+        throw passValidation
+   }
+
         model.state.user.email = user;
         model.state.user.password = pass;
         accountView.renderSpinner()
@@ -145,9 +140,6 @@ const loginAccount = async function () {
             throw 'Please enter your email and password'
           
         }
-       if ( !model.validateEmail(user)){
-            throw 'Please enter a valid email'
-       }
     
         model.state.user.email = user;
         model.state.user.password = pass;
@@ -242,7 +234,8 @@ const controlAccountWindow = function(){
 
 const controlEntryWindow =function(){
     try{
-        loginView.render(loginView._generateLogInMarkUp())
+
+        welcomeView.render()
     }catch(err){
         toastView.notify(err)
     }
@@ -307,6 +300,7 @@ const controlDeleteAccountWindow =function(){
 // opens 
 const controlGraph = async function(){
     try{
+        chartView.disableScroll()
         if (!model.state.sessionUpdated) {
             chartView.openChart()
             
@@ -346,6 +340,7 @@ const controlDownloadingChart =  function(){
 }
 
 const controlCloseChart = function(){
+    chartView.enableScroll()
     chartView.closeChart()
 
 }
@@ -454,10 +449,11 @@ const init = function(){
     mainView.addStopGrowingPoo()
     mainView.addGrowingHandler()
     mainView.addHandlerRender(controlPooButton)
+    welcomeView.addEntryOptionHandler(controlEntry)
     loginView.addCancelHandler(controlEntryWindow)
-    loginView.addEventHandler(controlLogin)
+
     loginView.addLoginHandler(controlEntryAccount)
-    loginView.addSignUpHandler(controlSignUp)
+
     deleteAccountView.addDeleteAccountWindowHandler(controlDeleteAccountWindow)
     accountView.addLogoutHandler(controlLogOut)
     accountView.addGraphHandler(controlGraph)

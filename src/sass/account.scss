@@ -1,10 +1,3 @@
-@mixin emoji-button {
-    font-size: 24px;
-    padding: 10px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    background-color: white;
-}
 
 @mixin emoji-picker {
     position: absolute;

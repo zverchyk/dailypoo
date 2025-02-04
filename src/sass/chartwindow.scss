@@ -1,3 +1,5 @@
+
+@use 'adaptive' as adapt;
 // Modal Styling
 @mixin modal {
 
@@ -13,6 +15,11 @@
     z-index: 10;
     padding: 20px;
     overflow: hidden;
+
+    @include adapt.respond-to('smartphone'){
+        width: 80vw;
+        height: 45vh;
+    }
 }
 
 // Overlay background

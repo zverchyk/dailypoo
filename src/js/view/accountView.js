@@ -28,15 +28,15 @@ class accountView extends View{
 
     _generateMarkUp(){
         return `
-                <div class="user-block">
+                <div class="footer__container__item user-block">
                
             </div>
-        <div class="footer__account">
-                <button class="footer__account__graph receive-graph" id="receive-graph" >Open graph</button>
+        <div class="footer__container__item footer__account">
+                <button class=" footer__account__graph receive-graph" id="receive-graph" >Open graph</button>
                 <button class="footer__account__delete delete-account" id="delete-account">Delete Account</button>
                 <button class="footer__account__logout" id="log-out">Log out</button>
             </div>
-                    <div class="advice-block">
+                    <div class="footer__container__item advice-block">
                  <blockquote> ${this.advice? this.advice: 'Eat more fiber'}</blockquote>
             </div>
         `

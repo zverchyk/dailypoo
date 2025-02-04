@@ -1,0 +1,12 @@
+// Define breakpoints
+$breakpoints: (
+    "smartphone": 500px,
+    "tablet": 1024px
+);
+
+// Mixin for media queries
+@mixin respond-to($breakpoint) {
+    @media (max-width: map-get($breakpoints, $breakpoint)) {
+        @content;
+    }
+}

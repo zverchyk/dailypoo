@@ -233,6 +233,23 @@ export const createToday = function(){
             
 }
 
+export const validatePassword = function(password) {
+    const minLength = /.{8,}/; // At least 8 characters
+    const hasLetter = /[a-zA-Z]/; // At least one letter
+    const hasNumber = /\d/; // At least one number
+
+    if (!minLength.test(password)) {
+        return "Password must be at least 8 characters long.";
+    }
+    if (!hasLetter.test(password)) {
+        return "Password must contain at least one letter.";
+    }
+    if (!hasNumber.test(password)) {
+        return "Password must contain at least one number.";
+    }
+
+    return true;
+}
 
 
 

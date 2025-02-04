@@ -7,16 +7,6 @@ class loginView extends View{
  
 
 
-    addEventHandler(handler){  
-        document.body.addEventListener('click', (event) => {
-            if (event.target && event.target.id === 'log-btn') {
-                handler()
-
-            }
-          });
-    }
-
-
     addLoginHandler(handler){
         document.body.addEventListener('click', (event) => {
             if (event.target && event.target.id === 'go-to-account') {
@@ -26,17 +16,11 @@ class loginView extends View{
           });
           
     }
-    addSignUpHandler(handler){
-        document.body.addEventListener('click', (event) => {
-            if (event.target && event.target.id === 'sign-btn') {
-                handler()
-            }
-          });
-    }
+
     addCancelHandler(handler){
         document.body.addEventListener('click', (event)=>{
             if (event.target && event.target.id === 'go-to-login') {
-                handler()
+                  handler()
             }
         })
     }
@@ -64,12 +48,7 @@ class loginView extends View{
             </div>`
     }
 
-    _generateLogInMarkUp(){
-        return `            <div class="login">
-                <button class="login__log-btn" id="log-btn">Log in</button>
-                <button class="login__sign-btn" id="sign-btn">Sign up</button>
-            </div>`
-    }
+
 }
 
 export default new loginView()
