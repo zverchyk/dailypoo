@@ -442,7 +442,7 @@ const controlGuideTour = function(){
 const init = function(){
 
     model.createToday()
-    // controlClock()
+    controlClock()
     inactivityHandler()
 
 
