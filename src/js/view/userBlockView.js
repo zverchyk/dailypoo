@@ -3,7 +3,7 @@ import view from "./view";
 class UserBlockView extends view {
     _parentElement = null; // ✅ No querySelector here (initialize later)
     username = "";
-    currentIcon = "";
+    currentIcon = "💩";
 
     /** ✅ Initialize the view only when needed */
     init() {

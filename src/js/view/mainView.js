@@ -48,7 +48,7 @@ class mainView{
 
     }
     addStopGrowingPoo(){
-        ["mouseup", "mouseleave","touchend"].forEach((event)=>{
+        ["mouseup", "mouseleave","touchend", "touchcancel"].forEach((event)=>{
             this._pooButton.addEventListener(event, () => {
                 clearInterval(this.growing);
             });
