@@ -24,8 +24,7 @@ class mainView{
     }
     growPoo() {
        
-            console.log('start growing');
-    
+   
             let fontSize = parseFloat(window.getComputedStyle(this._pooButton).fontSize); // Get fresh font size
             let toGrow = true
 

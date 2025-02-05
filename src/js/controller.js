@@ -254,7 +254,7 @@ const controlLogOut = async function(){
 
        accountView.renderSpinner()
        model.resetState()
-       loginView.render(loginView._generateLogInMarkUp())
+       welcomeView.render()
        headerView.clearPoo()
        const response =await model.logout()
  
@@ -392,7 +392,6 @@ const inactivityHandler = function() {
 
     function runOnce() {
         if (!hasRun) {
-            console.log("User is inactive! Running the function...");
             guideView.welcomeScenario(); // Your function
             hasRun = true; // Prevents further execution
 

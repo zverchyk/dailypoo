@@ -21,7 +21,7 @@ class UserBlockView extends view {
         const emojiPicker = document.getElementById("emoji-picker");
         if (emojiPicker) {
             emojiPicker.addEventListener("emoji-click", (event) => {
-                console.log("💡 Emoji Selected!");
+
                 this.currentIcon = event.detail.unicode;
                 this._parentElement.querySelector("#emoji-button").textContent = this.currentIcon; // Set selected emoji
                 handler();

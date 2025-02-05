@@ -113,10 +113,6 @@ class GuideView extends view{
     }
     
     async showStep() {
-
-        console.log(this.currentStep)
-        console.log(this.tourSteps.length)
-
         
         if(this.targetElement!== null){
             this.targetElement.removeEventListener('click', this.actualStep)

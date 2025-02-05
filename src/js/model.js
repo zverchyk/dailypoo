@@ -86,6 +86,7 @@ export const updateUser = async function(){
 
         if (Object.keys(checkedUserInfo).length === 0) throw 'nothing to update'
 
+
         const response = await server.updateUser({...checkedUserInfo, userId: state.user.id})
 
         // if success update state.user.email and etc
