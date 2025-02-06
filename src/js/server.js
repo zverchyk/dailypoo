@@ -118,6 +118,7 @@ const loginUser = async (userInfo) =>{
 
 // update session 
   const updateSession= async function(pooInfo){
+
     try{
       const fetchPro = fetch(`${process.env.API_URL}/poo/update`, {
         method: 'PUT',

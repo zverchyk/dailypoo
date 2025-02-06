@@ -121,7 +121,7 @@ export const loginUser = async function(){
             return response.message
         } 
         state.poo.times = response.session.times
-        state.poo.sizes = response.session.times
+        state.poo.sizes = response.session.sizes
         return response.message
         
     } catch (err) {
@@ -162,6 +162,7 @@ export const updateSession = async function(){
             times: state.poo.times,
             sizes: state.poo.sizes
         }
+        console.log(sessionInfo)
         const response = await server.updateSession(sessionInfo)
         state.sessionUpdated =true
         return response 

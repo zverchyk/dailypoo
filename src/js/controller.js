@@ -41,7 +41,6 @@ const controlPooButton = async function(){
         const now = new Date();
 
     try{
-        
 
         if(model.state.poo.times.length>=10) throw 'temporary limit 10 records'
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
@@ -56,8 +55,11 @@ const controlPooButton = async function(){
         if(mainView.currentSize >=250){
             iconSize = "3rem"
         }
+
         model.state.poo.times.push(time)
         model.state.poo.sizes.push(iconSize)
+        console.log(time)
+                
 
         headerView.time = time
         headerView.size =iconSize
@@ -158,8 +160,9 @@ const loginAccount = async function () {
     
         model.state.poo.times.forEach((time) =>{
             headerView.time = time
+
             headerView.size = model.state.poo.sizes[model.state.poo.times.indexOf(time)]
-             headerView.renderPoo()});
+            headerView.renderPoo()});
 
 
     } catch (err) {
@@ -368,12 +371,14 @@ const cotrolDeleteOneIcon = async function(){
     const index = model.state.poo.times.indexOf(headerView.time);
     if (index !== -1) {
         model.state.poo.times.splice(index, 1);
+        model.state.poo.sizes.splice(index, 1)
+
         }
 
-    toastView.notify('deleted')
+    
     // update the list
     const pooResposnse = await model.updateSession()
-
+    toastView.notify('deleted')
     toastView.notify(pooResposnse)
     // delete the poo from the page
     headerView.deleteOnePoo()
@@ -438,15 +443,19 @@ const controlGuideTour = function(){
 }
 
 
+const controlPooGrowing = function(){
+    mainView.growPoo()
+}
+
 const init = function(){
 
     model.createToday()
     controlClock()
     inactivityHandler()
-
+    debugger
 
     mainView.addStopGrowingPoo()
-    mainView.addGrowingHandler()
+    mainView.addGrowingHandler(controlPooGrowing)
     mainView.addHandlerRender(controlPooButton)
     welcomeView.addEntryOptionHandler(controlEntry)
     loginView.addCancelHandler(controlEntryWindow)

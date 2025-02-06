@@ -18,6 +18,7 @@ class headerView{
         const safeId = CSS.escape(this.time);
         this._parentElement.querySelector(`#${safeId}`).remove();
         this.time=""
+        this.size=''
 
     }
     addDeleteOneHandler(handler){

@@ -23,8 +23,7 @@ class mainView{
         this._pooButton.textContent = this.currentIcon
     }
     growPoo() {
-       
-   
+
             let fontSize = parseFloat(window.getComputedStyle(this._pooButton).fontSize); // Get fresh font size
             let toGrow = true
 
@@ -36,9 +35,6 @@ class mainView{
                          toGrow = false; 
                     }
                 } 
-        
- 
-        
                 // ✅ Apply final size
                 this._pooButton.style.fontSize = fontSize + "px";
                 this.currentSize = fontSize;
@@ -88,10 +84,7 @@ class mainView{
             createParticle(iconRect, this.currentIcon, "parabolic-right", i, launchPoints[i].yOffset);
         }
    
-
-
 }
-
 
     addHandlerRender(handler){
         this._pooButton.addEventListener("click", () => {
@@ -100,10 +93,10 @@ class mainView{
             handler()
             });
         }
-    addGrowingHandler(){
+    addGrowingHandler(handler){
         ['mousedown', 'touchstart'].forEach((event)=>{
             this._pooButton.addEventListener(event, () => {
-                this.growPoo()
+                handler()
             });
         })
     }
