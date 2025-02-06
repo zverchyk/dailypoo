@@ -5,7 +5,7 @@ export default async (req) => {
 
     // Your API connection code here
     try {
-        const response = await fetch("https://your-api-endpoint.com");
+        const response = await fetch("https://pooapi.onrender.com/");
         const data = await response.json();
         console.log("API Response:", data);
     } catch (error) {
