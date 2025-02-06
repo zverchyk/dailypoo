@@ -1,18 +1,21 @@
-import { Config } from "@netlify/functions"
-
 export default async (req) => {
-    const { next_run } = await req.json()
+    const { next_run } = await req.json();
 
+    console.log("Connecting to API. Next invocation at:", next_run);
 
-console.log(next_run)
+    // Your API connection code here
+    try {
+        const response = await fetch("https://your-api-endpoint.com");
+        const data = await response.json();
+        console.log("API Response:", data);
+    } catch (error) {
+        console.error("Error fetching API:", error);
+    }
 
-// Your API connection code here
-// For example:
-const response = await fetch("https://https://pooapi.onrender.com")
-const data = await response.json()
-console.log(data)
+    return new Response("Scheduled function executed", { status: 200 });
+};
 
-}
-export const Config = {
-    schedule: "*/15 * * * *"
-}
+export const config = {
+    schedule: "*/15 * * * *" // Runs every 15 minutes
+};
+
