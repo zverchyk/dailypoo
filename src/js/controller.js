@@ -452,8 +452,6 @@ const init = function(){
     model.createToday()
     controlClock()
     inactivityHandler()
-    debugger
-
     mainView.addStopGrowingPoo()
     mainView.addGrowingHandler(controlPooGrowing)
     mainView.addHandlerRender(controlPooButton)

@@ -1,0 +1,9 @@
+[functions]
+directory = "netlify/functions"
+
+[[plugins]]
+package = "@netlify/plugin-scheduled-functions"
+
+[[scheduled.functions]]
+function = "keepAlive"
+cron = "*/5 * * * *"
