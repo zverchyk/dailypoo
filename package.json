@@ -31,6 +31,7 @@
     "vm-browserify": "^1.1.2"
   },
   "dependencies": {
+    "@netlify/functions": "^3.0.0",
     "@netlify/serverless-functions-api": "^1.33.0",
     "chart.js": "^4.4.7",
     "emoji-picker-element": "^1.26.1",
