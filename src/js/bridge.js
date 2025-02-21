@@ -1,8 +1,11 @@
 import * as wsModel from "./wsModel"
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') })
+
 
 let socket = null
 export const openWebSocket = function(userId){
-    socket = new WebSocket("ws://localhost:8070");
+    socket = new WebSocket(process.env.WEBSOCKET);
     socket.onopen = () => {
         socket.send(JSON.stringify({ type: "register", userId })); // Register client
         console.log("WebSocket connected.");
