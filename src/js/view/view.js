@@ -44,7 +44,7 @@ export default class View {
         this._parentElement.insertAdjacentHTML('afterbegin', this._markpupSpinner())
     }
     _markpupSpinner(){
-        return `<div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`
+        return `<div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`
     }
 }
 

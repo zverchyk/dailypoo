@@ -17,12 +17,12 @@ class GuideView extends view{
         this.tourSteps.push(
             { 
                 element: "#poo-btn", 
-                text: "click on icon to start",
-                scroll: await this.scrollToUp()
+                text: "click on icon to start"
+                // scroll: await this.scrollToUp()
                 
             })
         
-        this.render(scroll=false)
+        // this.render(scroll=false)
         this.startTour()
         this.showStep()
  
@@ -31,45 +31,50 @@ class GuideView extends view{
 
     async tourScenario(){
         const steps = [
-            { 
-                element: "#poo-btn", 
-                text: "click to add a record with time",
-                scrollUp: true
+            // { 
+            //     element: "#poo-btn", 
+            //     text: "click to add a record with time",
+            //     scrollUp: true
                 
-            },
-            { 
-                element: "#poo-case", 
-                text: "Your records are shown here, click on it to delete"
+            // },
+            // { 
+            //     element: "#poo-case", 
+            //     text: "Your records are shown here, click on it to delete",
+            //     down: 60
                 
-            },
-            { 
-                element: "#poo-btn", 
-                text: "Now try to press and hold icon for 2 sec"
+            // },
+            // { 
+            //     element: "#poo-btn", 
+            //     text: "Now try to press and hold icon for 2 sec"
                 
-            },
-            { 
-                element: "#emoji-button", 
-                text: "Click to change your icon", 
-                scrollDown: true
+            // },
+            // { 
+            //     element: "#emoji-button", 
+            //     text: "Click to change your icon", 
+            //     scrollDown: true
 
                 
-            },
-            { 
-                element: "#emoji-picker", 
-                text: "Pick your emoji, and click next to continue", 
-                width: true,
-                btn: true
-            },
+            // },
+            // { 
+            //     element: "#emoji-picker", 
+            //     text: "Pick your emoji, and click next to continue", 
+            //     width: true,
+            //     btn: true
+            // },
             { 
                 element: "#receive-graph", 
-                text: "Click to open your graph"
+                text: "Click to open your graph",
+                top: 180
 
                 
             },
             { 
-                element: "#chartModal", 
+                element: "#close-graph", 
                 text: "Here you can check, download and receive an email with your graph. Close this window to finish",
-                width: true,
+                left: 10,
+                top: 400
+
+
                 
             }
 
@@ -77,16 +82,17 @@ class GuideView extends view{
         ]
         steps.forEach(step =>this.tourSteps.push(step))
         
-        this.render(scroll=false)
+        // this.render(scroll=false)
         this.startTour()
         this.showStep()
     }
 
     startTour() {
-        this.disableScroll()
+        // this.disableScroll()
         this._overlayElement.classList.remove("hidden");
-        this._tourBoxElement = document.querySelector('#tour-box')
-        this._parentElement.classList.remove('hidden')
+        // this._tourBoxElement = document.querySelector('#tour-box')
+        // this._parentElement.classList.remove('hidden')
+      
   
      
         
@@ -113,6 +119,9 @@ class GuideView extends view{
     }
     
     async showStep() {
+        if(this._tourBoxElement !== null){
+            this._tourBoxElement.remove()
+        }
         
         if(this.targetElement!== null){
             this.targetElement.removeEventListener('click', this.actualStep)
@@ -124,6 +133,7 @@ class GuideView extends view{
             return;
         }
 
+
     
         const step = this.tourSteps[this.currentStep];
 
@@ -132,24 +142,40 @@ class GuideView extends view{
         this.targetElement = await this.waitForElement(step.element)
         const computedStyle = window.getComputedStyle(this.targetElement);
         this.originalZindex = computedStyle.zIndex
+ 
 
-        
+  
+        this.targetElement.insertAdjacentHTML('afterend', this._generateMarkUp())
+        this._tourBoxElement = document.querySelector('#tour-box')
+
+
         if (!this.targetElement) {
             console.log('could not find the element')
             throw 'could not find the element'
     }
         // Get element position
         const rect = this.targetElement.getBoundingClientRect();
-       this.targetElement.style.zIndex = 6
+       this.targetElement.style.zIndex = 10
         // Position the tooltip dynamically
-        this._tourBoxElement.style.top = `${rect.top+ rect.height}px`; // Adjust top
-        this._tourBoxElement.style.left = `${rect.left + (step.width? rect.width: 0)}px`; // Place to the right
+       if(step.down){
+        this._tourBoxElement.style.top = `${step.down}px`; 
+            }
+        if(step.top){
+            this._tourBoxElement.style.bottom = `${step.top}px`; 
+        }
+        if(step.right){
+        this._tourBoxElement.style.left = `${step.right}px`; 
+        }
+        if(step.left){
+        this._tourBoxElement.style.right = `${step.left}px`; 
+        }
+
+
         this._tourBoxElement.classList.remove("hidden")
 
         this._tourBoxElement.innerText = step.text;
         this.actualStep = this.showStep.bind(this)
         if(step.btn) {
-            console.log('hello')
             this._tourBoxElement.insertAdjacentHTML('beforeend', '<button id="tour-box__btn" class="tour-box__btn">Next</button>')
             this.targetElement = this._tourBoxElement.querySelector('button')
         }
@@ -164,6 +190,7 @@ class GuideView extends view{
         this.enableScroll()
         this._parentElement.classList.add('hidden')
         this._overlayElement.classList.add("hidden");
+        
          // change to remove
         this._clear()
 

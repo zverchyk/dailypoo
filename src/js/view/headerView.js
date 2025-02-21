@@ -1,3 +1,5 @@
+
+// header with wsView
 class headerView{
     _parentElement = document.querySelector('.header__poo-case')
     currentIcon = '💩'
@@ -29,6 +31,11 @@ class headerView{
                     handler()
                 }})
        
+    }
+    addOneRecordHandler(handler){
+        document.addEventListener('DOMContentLoaded',()=>{
+            handler()
+        })
     }
 
     changePooIcon(icon){

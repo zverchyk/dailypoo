@@ -14,8 +14,13 @@
 	align-items: center;
 	justify-content: center;
     margin: 0 auto;
+    
+    padding: 10px;
+
+    height: 100%;
 
     blockquote {
+        width: 80%;
         display: inline-flex;
         font-weight: 40;
         font-size: 1rem;
@@ -40,7 +45,7 @@
         }
         &::before {
             content: '“';
-            left: -2rem;
+            left: -1rem;
             top: -1rem;
             @include adapt.respond-to('smartphone'){
                 left: -1rem;
@@ -49,7 +54,7 @@
         }   
         &::after {
             content: '”';
-            right: -3rem;
+            right: -1rem;
             bottom: -1rem;
             @include adapt.respond-to('smartphone'){
                 right: -1rem;

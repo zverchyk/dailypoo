@@ -28,7 +28,7 @@ class chartView extends view{
         this._parentElement = document.querySelector('.modal')
             // Render the chart with a smaller canvas
         const canvas = document.getElementById('bubbleChartCanvas');
-        canvas.width = 200;  // 3x smaller
+        canvas.width = 300;  // 3x smaller
         canvas.height = 200; // 3x smaller
 
         const ctx = canvas.getContext('2d');
@@ -58,9 +58,6 @@ class chartView extends view{
             }
           });
     }
-
-
-
 
     _generateMarkUp(){
         return `   

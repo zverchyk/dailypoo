@@ -1,257 +1,223 @@
-import server from './server'
-import validator from 'validator'
-import {createBubbleChart} from './graph'
+const server = require('./server');
+const validator = require('validator');
+const { createBubbleChart } = require('./graph');
+const bridge = require('./bridge');
 
-
-
-export const state = {
+const state = {
     mode: undefined,
-    sessionUpdated:true,
-    user:{
+    sessionUpdated: true,
+    user: {
         email: '',
         password: '',
-        id:'',
+        id: '',
         icon: '',
         pic: ''
     },
-    poo:{
-        day:'',
-        times:[],
-        sizes:[]
+    poo: {
+        day: '',
+        times: [],
+        sizes: []
     },
-    updatedUser:{
-        newEmail:'',
+    updatedUser: {
+        newEmail: '',
         newPassword: '',
         newPic: '',
-        newIcon:''
+        newIcon: ''
     }
-
-}
-
-export const validateEmail = function(email){
-    return validator.isEmail(email)? true: false
-}
-
-export const resetState = () => {
-    for (const key in state) {
-      if (typeof state[key] === 'object' && !Array.isArray(state[key])) {
-        for (const subKey in state[key]) {
-          state[key][subKey] = Array.isArray(state[key][subKey]) ? [] : '';
-        }
-      } else {
-        state[key] = undefined;
-      }
-    }
-    console.log(state)
-  };
+};
 
 
-// creates user and poo session
-export const createUser = async function(){
-    try{
-        
-        const response = await server.createUser({email: state.user.email, password: state.user.password, day: state.poo.day})
-        state.user.id = response.userId
-        return response.message
-        
-    }catch(err){
-        throw(err)
-    }
-    
-}
 
-export const updateUser = async function(){
-    try{
-        const userInfo = {
-            email: state.updatedUser.newEmail, 
-            password:state.updatedUser.newPassword,
-            icon: state.updatedUser.newIcon
-        }
-        const removeKeys = (obj, keysToRemove) => Object.fromEntries(
-            Object.entries(obj).filter(([key]) => !keysToRemove.includes(key))
-        );
-        
-   
-        let keysToRemove = []
- 
-        // filters for duplicates and empty values
-        Object.keys(userInfo).forEach(item=>{
-            if (userInfo[item] === "") keysToRemove.push(item)
-
-            if (userInfo[item] === state.user[item]) keysToRemove.push(item)
-         })
-
-        const checkedUserInfo = removeKeys(userInfo, keysToRemove);
-
-
-        if (Object.keys(checkedUserInfo).length === 0) throw 'nothing to update'
-
-
-        const response = await server.updateUser({...checkedUserInfo, userId: state.user.id})
-
-        // if success update state.user.email and etc
-        Object.keys(checkedUserInfo).forEach(item=>{
-            state.user[item] = checkedUserInfo[item]
-        })
-
-        // clear state.updatedUser.newEmail and etc
-        Object.keys(state.updatedUser).forEach(item=>{
-           state.updatedUser[item] = ''
-        })
-
-         return response.message
-    }catch(err){
-        throw err
-    }
-}
-// logins user and gets session
-
-export const loginUser = async function(){
-
+// ####### USER FUNCTIONS #######
+async function createUser() {
     try {
-        const response = await server.loginUser({ email: state.user.email, password: state.user.password, day: state.poo.day});
-        state.user.id = response.userId
-        state.user.icon = response.icon
-   
-        
-
-        if (!response.session) {
-            state.poo.times = []
-            state.poo.sizes = []
-            return response.message
-        } 
-        state.poo.times = response.session.times
-        state.poo.sizes = response.session.sizes
-        return response.message
-        
+        const response = await server.createUser({ email: state.user.email, password: state.user.password, day: state.poo.day });
+        state.user.id = response.userId;
+        bridge.openWebSocket(state.user.id);
+        return response.message;
     } catch (err) {
         throw err;
     }
 }
-// deletes user and poo data 
-export const deleteUser = async function(){
-    try{
 
-        const response = await server.deleteUser(state.user.id)
-        return response
-    }catch(err){
-        throw err
+async function updateUser() {
+    try {
+        const userInfo = {
+            email: state.updatedUser.newEmail,
+            password: state.updatedUser.newPassword,
+            icon: state.updatedUser.newIcon
+        };
+
+        const removeKeys = (obj, keysToRemove) => Object.fromEntries(
+            Object.entries(obj).filter(([key]) => !keysToRemove.includes(key))
+        );
+
+        let keysToRemove = [];
+
+        Object.keys(userInfo).forEach(item => {
+            if (userInfo[item] === "" || userInfo[item] === state.user[item]) keysToRemove.push(item);
+        });
+
+        const checkedUserInfo = removeKeys(userInfo, keysToRemove);
+
+        if (Object.keys(checkedUserInfo).length === 0) throw 'nothing to update';
+
+        const response = await server.updateUser({ ...checkedUserInfo, userId: state.user.id });
+
+        Object.keys(checkedUserInfo).forEach(item => {
+            state.user[item] = checkedUserInfo[item];
+        });
+
+        Object.keys(state.updatedUser).forEach(item => {
+            state.updatedUser[item] = '';
+        });
+
+        return response.message;
+    } catch (err) {
+        throw err;
     }
-
 }
 
-export const logout = async function(){
-    try{
+async function loginUser() {
+    try {
+        const response = await server.loginUser({ email: state.user.email, password: state.user.password, day: state.poo.day });
+        state.user.id = response.userId;
+        state.user.icon = response.icon;
+        bridge.openWebSocket(state.user.id);
 
-        const response = await server.logout()
-        return response
-    }catch(err){
-        throw err
+        if (!response.session) {
+            state.poo.times = [];
+            state.poo.sizes = [];
+            return response.message;
+        }
+        state.poo.times = response.session.times;
+        state.poo.sizes = response.session.sizes;
+        return response.message;
+    } catch (err) {
+        throw err;
     }
 }
 
+async function deleteUser() {
+    try {
+        return await server.deleteUser(state.user.id);
+    } catch (err) {
+        throw err;
+    }
+}
 
-// POO
+async function logout() {
+    try {
+        bridge.closeWebSocket(state.user.id);
+        return await server.logout();
+    } catch (err) {
+        throw err;
+    }
+}
 
-// updates session 
-export const updateSession = async function(){
-    try{
+// ####### SESSION MANAGEMENT #######
+async function updateSession() {
+    try {
         const sessionInfo = {
-            userId: state.user.id, 
+            userId: state.user.id,
             day: state.poo.day,
             times: state.poo.times,
             sizes: state.poo.sizes
-        }
-        console.log(sessionInfo)
-        const response = await server.updateSession(sessionInfo)
-        state.sessionUpdated =true
-        return response 
-        
-    }catch(err){
-        throw err
-    }
-}
-
-// create graph
-export const createGraph = async function(){
-    try{
-        const rawData = await server.getSessions(state.user.id)
-        console.log(rawData[0].times.length)
-        if (rawData[0].times.length === 0) throw ('no data to create a chart')
-        const config = createBubbleChart(rawData)
-
-        return config
-    }catch(err){
-        throw err
+        };
+        const response = await server.updateSession(sessionInfo);
+        state.sessionUpdated = true;
+        return response;
+    } catch (err) {
+        throw err;
     }
 }
 
 
-export const downloadChart= function() {
+
+
+// ####### GRAPH FUNCTIONS #######
+async function createGraph() {
+    try {
+        const rawData = await server.getSessions(state.user.id);
+        if (!rawData[0].times.length) throw 'no data to create a chart';
+        return createBubbleChart(rawData);
+    } catch (err) {
+        throw err;
+    }
+}
+
+function downloadChart() {
     const canvas = document.getElementById("bubbleChartCanvas");
     const imageURL = canvas.toDataURL("image/png");
-
     const link = document.createElement("a");
     link.href = imageURL;
     link.download = "month_poo_chart.png";
     link.click();
-    return 'ready to download'
+    return 'ready to download';
 }
 
-
-export const sendChart = async function(){
-    try{
-        const email = state.user.email
+// ####### EMAIL FUNCTIONS #######
+async function sendChart() {
+    try {
+        const email = state.user.email;
         const canvas = document.getElementById('bubbleChartCanvas');
-        const imageData = canvas.toDataURL('image/png'); // Convert to Base64
-        const response = await server.sendChart(email, imageData)
-        return response
-    }catch(err){
-        throw err
+        const imageData = canvas.toDataURL('image/png');
+        return await server.sendChart(email, imageData);
+    } catch (err) {
+        throw err;
     }
 }
-// ADVICE 
 
-export const getAdvice = async function(){
-    const advice = await server.getAdvice()
-    return advice
-
+async function getAdvice() {
+    return await server.getAdvice();
 }
 
-// creates todays
-export const createToday = function(){
+// ####### GENERAL METHODS #######
+function createToday() {
     const now = new Date();
-
-            // Get current time in HH:MM:SS format and date in DD:MM:YY format
-
-            const day = String(now.getDate()).padStart(2, '0'); // Ensures two digits
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is 0-based
-            const year = now.getFullYear();
-
-            // Combine them into the desired format
-            const date = `${day}${month}${year}`;
-
-            state.poo.day = date
-            
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    state.poo.day = `${day}${month}${year}`;
 }
 
-export const validatePassword = function(password) {
-    const minLength = /.{8,}/; // At least 8 characters
-    const hasLetter = /[a-zA-Z]/; // At least one letter
-    const hasNumber = /\d/; // At least one number
-
-    if (!minLength.test(password)) {
-        return "Password must be at least 8 characters long.";
-    }
-    if (!hasLetter.test(password)) {
-        return "Password must contain at least one letter.";
-    }
-    if (!hasNumber.test(password)) {
-        return "Password must contain at least one number.";
-    }
-
+function validatePassword(password) {
+    if (!/.{8,}/.test(password)) return "Password must be at least 8 characters long.";
+    if (!/[a-zA-Z]/.test(password)) return "Password must contain at least one letter.";
+    if (!/\d/.test(password)) return "Password must contain at least one number.";
     return true;
 }
 
+function validateEmail(email) {
+    return validator.isEmail(email);
+}
 
+function resetState() {
+    for (const key in state) {
+        if (typeof state[key] === 'object' && !Array.isArray(state[key])) {
+            for (const subKey in state[key]) {
+                state[key][subKey] = Array.isArray(state[key][subKey]) ? [] : '';
+            }
+        } else {
+            state[key] = undefined;
+        }
+    }
+}
 
+module.exports = {
+    state,
+    createUser,
+    updateUser,
+    loginUser,
+    deleteUser,
+    logout,
+    updateSession,
+    createGraph,
+    downloadChart,
+    sendChart,
+    getAdvice,
+    createToday,
+    validatePassword,
+    validateEmail,
+    resetState
+};

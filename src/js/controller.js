@@ -1,4 +1,5 @@
 import * as model from "./model";
+import * as bridge from './bridge'
 
 
 import mainView from "./view/mainView";
@@ -18,19 +19,19 @@ import welcomeView from "./view/welcomeView";
 
 
 
+
+// starts front-end clock 
 const controlClock = function(){
     setInterval(mainView.updateClock.bind(mainView), 1000)
     mainView.updateClock()
 }
 
 
-// const controlPooHeader =async function(){
-//     if(!model.state.user.id) return 
-    
-//     }
+//  ######## ADDING RECORDS ###########
 
+//  constrols all actions for Main button
 const controlPooButton = async function(){
-        createAdvice()
+        
     if(!model.state.user.id) {
         toastView.notify("log in or sing in to poo)")
 
@@ -42,7 +43,6 @@ const controlPooButton = async function(){
 
     try{
 
-        if(model.state.poo.times.length>=10) throw 'temporary limit 10 records'
         // Get current time in HH:MM:SS format and date in DD:MM:YY format
         const time = now.toLocaleTimeString('en-GB', { hour12: false });
         let iconSize
@@ -55,17 +55,9 @@ const controlPooButton = async function(){
         if(mainView.currentSize >=250){
             iconSize = "3rem"
         }
-
-        model.state.poo.times.push(time)
-        model.state.poo.sizes.push(iconSize)
-        console.log(time)
-                
-
-        headerView.time = time
-        headerView.size =iconSize
+        addRecord(time, iconSize)
 
         const pooResposnse = await model.updateSession()
-        headerView.renderPoo()
         toastView.notify(pooResposnse)
         
     }
@@ -75,19 +67,40 @@ const controlPooButton = async function(){
     }
 }
 
-// ENTERING to login or sign up
+// adds record to the front list and updated header poo case
+const addRecord = function(time, iconSize){
+    
+    if(model.state.poo.times.length>=10) throw 'temporary limit 10 records'
+    createAdvice()
+    model.state.poo.times.push(time)
+    model.state.poo.sizes.push(iconSize)
 
+        headerView.time = time
+        headerView.size =iconSize
+        headerView.renderPoo()
+}
+
+// callback function to update poo case
+const controlIotRequest = function(){
+    bridge.onMessage((data)=>{
+            addRecord(data.time, data.iconSize)
+        })
+
+}
+
+// creates window for log in or sing up 
 const controlEntry = function(){
     try{
         loginView.render()
         model.state.mode = welcomeView.mode
-  
     }
     catch(err){
         toastView.notify(err)
 
     }
 }
+
+// checks either user sings-up or logs-in
 const controlEntryAccount = async function(){
     model.createToday()
     if (model.state.mode === 'sign-up') await createAccount()
@@ -95,7 +108,7 @@ const controlEntryAccount = async function(){
 
 }
 
-// subfunctions 
+// creates new account 
 const createAccount = async function(){
     const [ user, pass]  = loginView.getUserPass()
  
@@ -133,6 +146,7 @@ const createAccount = async function(){
     }
 }
 
+// enters existed account 
 const loginAccount = async function () {
     
         const [user, pass] = loginView.getUserPass();
@@ -171,24 +185,22 @@ const loginAccount = async function () {
 
     }
 };
-// ENTERING ACCOUNT
 
-// ADVICES
+
+// changes current advice to new one
 const createAdvice = async function(){
     try{
-        
         accountView.advice =  await model.getAdvice()
         accountView.changeAdvice()
-        
-        
     }catch(err){
         toastView.notify('a good advice did not come to you today')
     }
     
 }
 
-// EDIT USER
+// ####### EDIT USER #######
 
+// opens window to change user log-in data
 const controlEditAccountWindow =function(){
 
     editAccountView.email = model.state.user.email
@@ -199,9 +211,8 @@ const controlEditAccountWindow =function(){
     editAccountView.addSaveHandler(saveEditedUser)
 }
 
+// saves changed user log-in data
 const saveEditedUser = async function(){
-    // conect with server 
-
     const [newEmail, newPassword]= editAccountView.getUserInput()
     model.state.updatedUser.newEmail = newEmail
     model.state.updatedUser.newPassword = newPassword
@@ -218,12 +229,26 @@ const saveEditedUser = async function(){
 
     
 }
+// changes icon due to changes in user block
+const controlIcon = function(){
+    let icon = model.state.user.icon
+    // checks if icon was changed in userblock
+    if(userBlockView.currentIcon!== icon && userBlockView.currentIcon!==""){
+       icon = userBlockView.currentIcon
+       model.state.updatedUser.newIcon = icon
+    }
+    mainView.changePooIcon(icon)
+    headerView.changePooIcon(icon)
+}
 
+
+
+
+// creates user control panel
 const controlAccountWindow = function(){
 
     accountView.render();
     userBlockView.init()
-
     userBlockView.username = model.state.user.email
     userBlockView.render()
     userBlockView.addIconHandler(controlIcon)
@@ -233,11 +258,11 @@ const controlAccountWindow = function(){
 
 
 }
-//  EDIT USER
 
+//  ####### ENTER #######
+// creates welcome panel for entering and creating to the account 
 const controlEntryWindow =function(){
     try{
-
         welcomeView.render()
     }catch(err){
         toastView.notify(err)
@@ -245,7 +270,7 @@ const controlEntryWindow =function(){
 }
 
 
-
+// logs-out
 const controlLogOut = async function(){
     try{
         accountView.renderSpinner()
@@ -274,7 +299,9 @@ const controlLogOut = async function(){
 
 
 
-// DELETING USER AND POO DATA
+// ####### DELETING USER AND POO DATA #######
+
+// delete user account with all related data
 const controlDeleteAccount = async function(){
     const pass = deleteAccountView.getConfirmedPass()
     if(model.state.user.password !== pass){
@@ -292,6 +319,7 @@ const controlDeleteAccount = async function(){
     
 
 }
+// creates delete window 
 const controlDeleteAccountWindow =function(){
     try{
         deleteAccountView.render()
@@ -299,11 +327,14 @@ const controlDeleteAccountWindow =function(){
         console.error(err)
     }
 }
-// GRAPHS
-// opens 
+
+
+// ####### GRAPHS #######
+
+// creates new or opens existing graph
 const controlGraph = async function(){
     try{
-        chartView.disableScroll()
+        // chartView.disableScroll()
         if (!model.state.sessionUpdated) {
             chartView.openChart()
             
@@ -322,7 +353,25 @@ const controlGraph = async function(){
     }
 
 }
+// closes graph window
+const controlCloseChart = function(){
+    chartView.enableScroll()
+    chartView.closeChart()
 
+}
+
+// downloads graph to user device
+const controlDownloadingChart =  function(){
+    try{
+        const response =  model.downloadChart()
+        toastView.notify(response)
+    }catch(err){
+        toastView.notify(err)
+    }
+}
+
+//  ###### EMAIL ######
+// sends Graph to the user email
 const controlSendingChart = async function(){
     try{
         const response = await model.sendChart()
@@ -333,37 +382,9 @@ const controlSendingChart = async function(){
     }   
 }
 
-const controlDownloadingChart =  function(){
-    try{
-        const response =  model.downloadChart()
-        toastView.notify(response)
-    }catch(err){
-        toastView.notify(err)
-    }
-}
-
-const controlCloseChart = function(){
-    chartView.enableScroll()
-    chartView.closeChart()
-
-}
-
-// ICONS
-const controlIcon = function(){
-    let icon = model.state.user.icon
-    // checks if icon was changed in userblock
-    if(userBlockView.currentIcon!== icon && userBlockView.currentIcon!==""){
-       icon = userBlockView.currentIcon
-       model.state.updatedUser.newIcon = icon
-    }
-    mainView.changePooIcon(icon)
-    headerView.changePooIcon(icon)
-}
 
 
-
-
-// delete one icon 
+// deletes one header record from the view and current session 
 const cotrolDeleteOneIcon = async function(){
 
     try{
@@ -390,6 +411,7 @@ const cotrolDeleteOneIcon = async function(){
     
 }
 
+//  ###### GUIDE ########
 // activates welcome guide once if user do nothing for 4 sec
 const inactivityHandler = function() {
     let inactivityTimer;
@@ -431,7 +453,7 @@ const inactivityHandler = function() {
     resetTimer();
 };
 
-
+// initial guied tour for first time visitor
 const controlGuideTour = function(){
     try{if(model.state.user.email !== ""){
         guideView.tourScenario()}
@@ -443,9 +465,7 @@ const controlGuideTour = function(){
 }
 
 
-const controlPooGrowing = function(){
-    mainView.growPoo()
-}
+
 
 const init = function(){
 
@@ -453,7 +473,7 @@ const init = function(){
     controlClock()
     inactivityHandler()
     mainView.addStopGrowingPoo()
-    mainView.addGrowingHandler(controlPooGrowing)
+    mainView.addGrowingHandler()
     mainView.addHandlerRender(controlPooButton)
     welcomeView.addEntryOptionHandler(controlEntry)
     loginView.addCancelHandler(controlEntryWindow)
@@ -470,27 +490,10 @@ const init = function(){
     chartView.addSendChartHandler(controlSendingChart)
     headerView.addDeleteOneHandler(cotrolDeleteOneIcon)
 
-    guideView.addGuideIconHandler(controlGuideTour)
-     // Attach handlers once to the document instead of multiple elements
-    //  document.body.addEventListener("click", (event) => {
-    //     if (event.target.matches(".poo-grow")) mainView.addGrowingHandler();
-    //     if (event.target.matches(".poo-stop")) mainView.addStopGrowingPoo();
-    //     if (event.target.matches(".poo-button")) controlPooButton();
-    //     if (event.target.matches(".cancel-button")) controlEntryWindow();
-    //     if (event.target.matches(".login-button")) controlLogin();
-    //     if (event.target.matches(".signup-button")) controlSignUp();
-    //     if (event.target.matches(".login-submit")) controlEntryAccount();
-    //     if (event.target.matches(".logout-button")) controlLogOut();
-    //     if (event.target.matches(".graph-button")) controlGraph();
-    //     if (event.target.matches(".delete-account")) controlDeleteAccount();
-    //     if (event.target.matches(".delete-cancel")) controlAccountWindow();
-    //     if (event.target.matches(".chart-close")) controlCloseChart();
-    //     if (event.target.matches(".chart-download")) controlDownloadingChart();
-    //     if (event.target.matches(".chart-send")) controlSendingChart();
-    //     if (event.target.matches(".delete-one-icon")) cotrolDeleteOneIcon();
-    //     if (event.target.matches(".guide-icon")) controlGuideTour();
-    // });
+    // websocket
+    headerView.addOneRecordHandler(controlIotRequest)
 
+    guideView.addGuideIconHandler(controlGuideTour)
 
 }
 

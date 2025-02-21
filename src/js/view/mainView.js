@@ -93,10 +93,10 @@ class mainView{
             handler()
             });
         }
-    addGrowingHandler(handler){
+    addGrowingHandler(){
         ['mousedown', 'touchstart'].forEach((event)=>{
             this._pooButton.addEventListener(event, () => {
-                handler()
+                this.growPoo()
             });
         })
     }

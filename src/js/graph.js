@@ -1,3 +1,5 @@
+// creates config file for chart library which is located in chartView.js
+
 export const createBubbleChart = function(rawData) {
     let month = parseInt(rawData[0].day.substring(2, 4), 10);
     let year = parseInt(rawData[0].day.substring(4, 8), 10);

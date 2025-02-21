@@ -1,7 +1,4 @@
 import view from './view'
-
-
-
 class welcomeView extends view{
     _parentElement = document.querySelector('.footer__container')
     mode = null

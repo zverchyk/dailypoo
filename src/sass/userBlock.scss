@@ -4,12 +4,12 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 10px;
     padding: 15px;
     border: 1px solid #ddd; // Light border for structure
     border-radius: 8px; // Rounded corners
     background-color: #f9f9f9; // Subtle background color
-    width: 300px; // Fixed width for consistency
+   
     font-family: Arial, sans-serif;
   
     &__info {
@@ -35,12 +35,12 @@
     }
   
     &__icon-choice {
-      display: flex;
+      display:inline;
       gap: 10px;
   
       .icon-choice {
         font-size: 40px;
-  
+        position: relative;
         cursor: pointer;
         border: none;
         background-color: transparent;
@@ -52,7 +52,7 @@
         }
       }
     }
-  
+    // button 
     .user-edit {
       align-self: flex-end; // Align button to the right
       padding: 5px 10px;
@@ -67,6 +67,25 @@
       &:hover {
         background-color: #0056b3; // Darker on hover
       }
+      
+
+    }
+    // edit window
+    .edit_user{
+      
+      >*{
+        margin:5px;
+      }
+      input{
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+        width: 80%;
+        padding: 10px 15px;
+        font-size: 14px;
+        transition: border-color .3s, box-shadow .3s;
+      }
+
     }
   }
   

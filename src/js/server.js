@@ -5,7 +5,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
 
-// USER
+// USER and SESSIONS 
 
 // create user , poo list and todays session
 const createUser = async (userInfo) => {
@@ -93,9 +93,8 @@ const loginUser = async (userInfo) =>{
   }
   };
 
-  // logingout 
-
-  const logout = async()=>{
+// logingout 
+const logout = async()=>{
     try{
 
         const fetchPro = await fetch(`${process.env.API_URL}/users/logout`, {
@@ -114,7 +113,9 @@ const loginUser = async (userInfo) =>{
       }
   }
 
-  // POO
+
+
+// POO
 
 // update session 
   const updateSession= async function(pooInfo){
@@ -136,7 +137,6 @@ const loginUser = async (userInfo) =>{
 
   }
   // get all sessions 
-
   const getSessions = async function(userId){
     try{
       const fetchPro = fetch(`${process.env.API_URL}/poo/all/${userId}`, {
@@ -156,7 +156,7 @@ const loginUser = async (userInfo) =>{
   
 
 
-  // ADVICE
+// ADVICE
 
 // get advice 
 const getAdvice = async function(){
@@ -181,6 +181,9 @@ const getAdvice = async function(){
   
 }
 
+// GRAPH and EMAIL
+
+// send graph
 const sendChart = async function(email, imageData){
 
   try{

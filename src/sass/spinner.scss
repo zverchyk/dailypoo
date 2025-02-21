@@ -1,4 +1,5 @@
-@mixin lds-default {
+@mixin spinner {
+    justify-self: center;
     box-sizing: border-box;
     display: inline-block;
     position: relative;
@@ -12,7 +13,7 @@
       height: 6.4px;
       background: brown;
       border-radius: 50%;
-      animation: lds-default 1.2s linear infinite;
+      animation: spinner 1.2s linear infinite;
   
       &:nth-child(1) {
         animation-delay: 0s;

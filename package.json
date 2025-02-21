@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "description": "",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.13.3",
@@ -36,6 +36,7 @@
     "chart.js": "^4.4.7",
     "emoji-picker-element": "^1.26.1",
     "sass": "^1.83.4",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "ws": "^8.18.0"
   }
 }
