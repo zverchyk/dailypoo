@@ -1,6 +1,8 @@
 import {TIMEOUT_SEC} from './config.js'
 import {timeout} from './helper.js'
 
+import * as wsModel from './wsModel.js'
+
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
@@ -153,6 +155,27 @@ const logout = async()=>{
     throw err
   }}
 
+
+// recieve data form iot device by sse tech
+
+const connectUser = async function(userId){
+  const eventSource = new EventSource(`${process.env.API_URL}/poo/events/${userId}`);
+  eventSource.onmessage = (event) => {
+
+    const data = JSON.parse(event.data)
+    wsModel.notifyListener(data)
+    // console.log("Received:", data);
+    
+  };
+
+  eventSource.onerror = (error) => {
+      console.error("SSE Error:", error);
+  };
+}
+
+const onMessage = function(callback){
+    wsModel.setListener(callback)
+}
   
 
 
@@ -217,7 +240,9 @@ module.exports = {
     logout,
     getAdvice,
     getSessions,
-    sendChart
+    sendChart,
+    connectUser,
+    onMessage
 
 
 

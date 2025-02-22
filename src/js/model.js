@@ -33,7 +33,8 @@ async function createUser() {
     try {
         const response = await server.createUser({ email: state.user.email, password: state.user.password, day: state.poo.day });
         state.user.id = response.userId;
-        bridge.openWebSocket(state.user.id);
+        // bridge.openWebSocket(state.user.id);
+        server.connectUser(state.user.id)
         return response.message;
     } catch (err) {
         throw err;
@@ -83,8 +84,8 @@ async function loginUser() {
         const response = await server.loginUser({ email: state.user.email, password: state.user.password, day: state.poo.day });
         state.user.id = response.userId;
         state.user.icon = response.icon;
-        bridge.openWebSocket(state.user.id);
-
+        // bridge.openWebSocket(state.user.id);
+        server.connectUser(state.user.id)
         if (!response.session) {
             state.poo.times = [];
             state.poo.sizes = [];

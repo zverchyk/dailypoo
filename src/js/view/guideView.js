@@ -31,36 +31,36 @@ class GuideView extends view{
 
     async tourScenario(){
         const steps = [
-            // { 
-            //     element: "#poo-btn", 
-            //     text: "click to add a record with time",
-            //     scrollUp: true
+            { 
+                element: "#poo-btn", 
+                text: "click to add a record with time",
+                scrollUp: true
                 
-            // },
-            // { 
-            //     element: "#poo-case", 
-            //     text: "Your records are shown here, click on it to delete",
-            //     down: 60
+            },
+            { 
+                element: "#poo-case", 
+                text: "Your records are shown here, click on it to delete",
+                down: 60
                 
-            // },
-            // { 
-            //     element: "#poo-btn", 
-            //     text: "Now try to press and hold icon for 2 sec"
+            },
+            { 
+                element: "#poo-btn", 
+                text: "Now try to press and hold icon for 2 sec"
                 
-            // },
-            // { 
-            //     element: "#emoji-button", 
-            //     text: "Click to change your icon", 
-            //     scrollDown: true
+            },
+            { 
+                element: "#emoji-button", 
+                text: "Click to change your icon", 
+                scrollDown: true
 
                 
-            // },
-            // { 
-            //     element: "#emoji-picker", 
-            //     text: "Pick your emoji, and click next to continue", 
-            //     width: true,
-            //     btn: true
-            // },
+            },
+            { 
+                element: "#emoji-picker", 
+                text: "Pick your emoji, and click next to continue", 
+                width: true,
+                btn: true
+            },
             { 
                 element: "#receive-graph", 
                 text: "Click to open your graph",

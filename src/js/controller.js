@@ -1,5 +1,6 @@
 import * as model from "./model";
 import * as bridge from './bridge'
+import * as server from './server'
 
 
 import mainView from "./view/mainView";
@@ -82,8 +83,8 @@ const addRecord = function(time, iconSize){
 
 // callback function to update poo case
 const controlIotRequest = function(){
-    bridge.onMessage((data)=>{
-            addRecord(data.time, data.iconSize)
+    server.onMessage((data)=>{
+            addRecord(data.time, data.size)
         })
 
 }
